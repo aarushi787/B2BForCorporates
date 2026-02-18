@@ -1,0 +1,336 @@
+B2B NEXUS MARKETPLACE - PROJECT DETAILS
+=======================================
+
+1) WHAT THIS PROJECT IS
+-----------------------
+B2B Nexus Marketplace is a full-stack web platform for enterprise-to-enterprise collaboration.
+It supports:
+- Merchant onboarding with business verification data.
+- Product discovery and partner matching.
+- Deal lifecycle management (enquiry to completion/dispute states).
+- Inter-company messaging.
+- Financial ledger and admin governance workflows.
+
+Tech stack:
+- Frontend: React + TypeScript + Vite + Tailwind utility classes + Recharts.
+- Backend: Node.js + Express + TypeScript.
+- Database: MySQL.
+
+
+2) HIGH-LEVEL ARCHITECTURE
+--------------------------
+Frontend app:
+- Entry: index.tsx
+- Main orchestrator: App.tsx
+- Views/components: components/*.tsx
+- API layer: services/*.ts
+- Auth context: src/auth/AuthProvider.tsx
+
+Backend API:
+- Entry: backend/src/index.ts
+- Routes:
+  - /api/auth
+  - /api/companies
+  - /api/products
+  - /api/deals
+  - /api/messages
+  - /api/ledger
+  - /api/payments (escrow + transactions)
+  - /api/members (multi-user companies + roles)
+  - /api/notifications (stored notifications + SSE stream)
+  - /api/documents (upload metadata + signatures)
+  - /api/reputation (ratings + score summary)
+  - /api/audit (audit log access)
+  - /api/jobs (queue API; DB-backed with Redis fallback hook)
+- DB pool/config: backend/src/config/database.ts
+- DB initialization: backend/src/config/init.ts
+
+Database:
+- Tables: users, companies, products, deals, messages, ledger,
+  company_members, escrows, payments, notifications, documents,
+  document_signatures, reputation_events, audit_logs, jobs
+- Initialization script creates and migrates schema safely for older MySQL versions.
+
+
+3) CORE FEATURES
+----------------
+A) Authentication and onboarding
+- Sign in and merchant registration.
+- Merchant registration captures:
+  - full name
+  - company name
+  - GST number
+  - PAN number (optional, validated)
+  - email
+  - phone
+  - password
+  - optional industry/domain/website/address/description
+- Backend-side format validation:
+  - GST regex validation
+  - PAN regex validation
+  - Phone regex validation
+  - Clear validation error messages
+
+B) Marketplace and company network
+- Product browsing and filtering.
+- Company directory and detailed company profile views.
+- Saved filter views in local storage.
+- Risk-oriented UI indicators.
+
+C) Deals and contracts
+- Deal creation and updates.
+- Deal workspace for milestones, splits, contracts, and risk insights.
+- AI-assisted deal/contract features (Gemini integration points).
+
+D) Messaging
+- Company-to-company chat.
+- Deal-linked messages.
+
+E) Financials
+- Ledger view with transaction history.
+- Balance and reporting endpoints.
+
+F) Admin governance
+- Company verification controls.
+- Compliance report management.
+- Platform metrics dashboard.
+- All merchant deals visibility in admin overview.
+
+G) Enterprise foundations (minimum additions)
+- Escrow + payment integration:
+  - Escrow create/fund/release APIs.
+  - Payment transaction records for IN/OUT money movement.
+- Multi-user companies with roles:
+  - Company member invite/list/role update with OWNER/ADMIN/FINANCE/LEGAL/OPS/VIEWER.
+- Real-time notifications:
+  - Persistent notifications + SSE endpoint for live push.
+- Document upload + e-sign:
+  - Document metadata upload records + signature capture (CLICK/OTP/DIGITAL).
+- Reputation system:
+  - Company rating events and aggregate score summary.
+- Audit logs:
+  - Action/resource/user/company logging and query APIs.
+- Redis + job queue layer:
+  - Queue API backed by DB jobs table.
+  - Optional Redis queue path enabled via REDIS_URL when Redis client/server is available.
+
+H) Compliance and privacy foundations
+- KYC document storage:
+  - encrypted-at-rest metadata storage for KYC uploads.
+- GST API verification:
+  - format validation plus optional provider integration via env config.
+- AML checks:
+  - automatic AML decisioning on escrow fund/release operations.
+- GDPR endpoints:
+  - consent capture, self data export, delete requests, and request tracking.
+
+I) Onboarding tour
+- Guided onboarding flow across major app areas.
+- Improved positioning logic to keep tooltip visible.
+- On close/complete, users are directed to Dashboard.
+
+
+4) API OVERVIEW (SUMMARY)
+-------------------------
+Auth:
+- POST /api/auth/register
+- POST /api/auth/login
+- POST /api/auth/logout
+- GET  /api/auth/me
+- PUT  /api/auth/profile
+- POST /api/auth/change-password
+- POST /api/auth/validate-token
+
+Companies:
+- GET    /api/companies
+- GET    /api/companies/:id
+- POST   /api/companies
+- PUT    /api/companies/:id
+- DELETE /api/companies/:id
+- PUT    /api/companies/:id/verify
+- GET    /api/companies/search?q=...
+- GET    /api/companies/domain/:domain
+
+Products:
+- GET    /api/products
+- GET    /api/products/:id
+- GET    /api/products/merchant/:merchantId
+- GET    /api/products/search?q=...
+- GET    /api/products/category/:category
+- POST   /api/products
+- PUT    /api/products/:id
+- PUT    /api/products/:id/inventory
+- DELETE /api/products/:id
+
+Deals:
+- GET    /api/deals
+- GET    /api/deals/:id
+- GET    /api/deals/buyer/:buyerId
+- GET    /api/deals/seller/:sellerId
+- GET    /api/deals/status/:status
+- POST   /api/deals
+- PUT    /api/deals/:id
+- PUT    /api/deals/:id/status
+- PUT    /api/deals/:id/approve
+- PUT    /api/deals/:id/reject
+- DELETE /api/deals/:id
+
+Messages:
+- GET    /api/messages
+- GET    /api/messages/company/:companyId
+- GET    /api/messages/thread?sender=...&receiver=...
+- GET    /api/messages/deal/:dealId
+- POST   /api/messages/send
+- PUT    /api/messages/:id/read
+- DELETE /api/messages/:id
+
+Ledger:
+- GET  /api/ledger
+- GET  /api/ledger/company/:companyId
+- GET  /api/ledger/deal/:dealId
+- POST /api/ledger
+- GET  /api/ledger/balance/:companyId
+- GET  /api/ledger/company/:companyId/type/:type
+- GET  /api/ledger/company/:companyId/month/:month
+
+Payments + Escrow:
+- POST /api/payments/escrows
+- POST /api/payments/escrows/:id/fund
+- POST /api/payments/escrows/:id/release
+- GET  /api/payments/escrows
+- GET  /api/payments/transactions
+
+Members + Roles:
+- GET  /api/members/company/:companyId
+- POST /api/members/invite
+- PUT  /api/members/:id/role
+
+Notifications:
+- GET  /api/notifications
+- GET  /api/notifications/stream
+- POST /api/notifications
+- PUT  /api/notifications/:id/read
+
+Documents + E-sign:
+- GET  /api/documents
+- POST /api/documents/upload
+- POST /api/documents/:id/sign
+- GET  /api/documents/:id/signatures
+
+Reputation:
+- POST /api/reputation/events
+- GET  /api/reputation/company/:companyId
+
+Audit:
+- GET /api/audit
+
+Jobs / Queue:
+- POST /api/jobs
+- GET  /api/jobs
+- PUT  /api/jobs/:id/status
+
+Compliance:
+- POST /api/compliance/gst/verify
+- POST /api/compliance/pan/verify
+- GET  /api/compliance/aml-checks
+
+KYC:
+- GET  /api/kyc/company/:companyId
+- POST /api/kyc/upload
+- PUT  /api/kyc/:id/verify
+
+Privacy / GDPR:
+- POST /api/privacy/consent
+- GET  /api/privacy/consent
+- GET  /api/privacy/export-me
+- POST /api/privacy/delete-request
+- GET  /api/privacy/requests
+
+Convenience endpoints:
+- GET /                -> API info/status
+- GET /api             -> API info/status
+- GET /api/health      -> health check
+
+
+5) DEMO ACCOUNTS
+----------------
+Seed data currently includes only:
+- Admin:
+  - email: admin@example.com
+  - password: password123
+- Merchant:
+  - email: merchant@example.com
+  - password: password123
+
+Note:
+- Merchant acts as the single business demo identity for seller/merchant/buyer style flows.
+
+
+6) PROJECT SETUP AND RUN
+------------------------
+A) Backend
+1. cd backend
+2. npm install
+3. Configure backend/.env
+4. npm run build
+5. npm run db:init
+6. npm run db:seed
+7. npm run dev
+
+B) Frontend
+1. In project root: npm install
+2. Configure .env.local
+3. npm run dev
+
+Default local URLs:
+- Frontend: http://localhost:3000
+- Backend:  http://localhost:5000
+
+
+7) ENVIRONMENT VARIABLES
+------------------------
+Frontend (.env.local):
+- VITE_API_BASE_URL=http://localhost:5000/api
+- VITE_AI_API_KEY=...
+- GEMINI_API_KEY=...
+
+Backend (backend/.env):
+- PORT=5000
+- NODE_ENV=development
+- DB_HOST=localhost
+- DB_PORT=3306
+- DB_USER=...
+- DB_PASSWORD=...
+- DB_NAME=b2b_nexus_marketplace
+- JWT_SECRET=...
+- JWT_EXPIRY=7d
+- CORS_ORIGIN=http://localhost:3000
+- REDIS_URL=redis://localhost:6379   (optional)
+- REDIS_QUEUE_KEY=b2b:jobs           (optional)
+- DATA_ENCRYPTION_KEY=...            (required for encrypted KYC metadata)
+- GST_VERIFY_API_URL=...             (optional external GST verification provider)
+- GST_VERIFY_API_KEY=...             (optional external GST verification provider token)
+
+
+8) THEMING AND UI NOTES
+-----------------------
+- Current visual accent theme is cyan across app screens.
+- Contrast has been tuned for better readability on light backgrounds.
+- Landing, auth, dashboard/admin, and supporting pages follow the same accent direction.
+
+
+9) KNOWN BUILD/DEV NOTES
+------------------------
+- Vite may warn about large bundle chunks; app still builds/runs.
+- /index.css warning can appear if that file is not generated/provided at build time.
+- Recharts containers have min width/height safeguards to avoid negative dimension warnings.
+
+
+10) CURRENT STATUS
+------------------
+Project includes:
+- End-to-end frontend/backend/database integration.
+- Merchant registration + validation.
+- Admin governance and all-deals visibility.
+- Seeded demo access.
+- Updated onboarding behavior and improved tooltip visibility logic.
