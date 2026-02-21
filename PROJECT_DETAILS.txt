@@ -334,6 +334,3 @@ Project includes:
 - Admin governance and all-deals visibility.
 - Seeded demo access.
 - Updated onboarding behavior and improved tooltip visibility logic.
-
-
-Changes :
