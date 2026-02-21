@@ -100,7 +100,11 @@ const Layout: React.FC<LayoutProps> = ({ user, onLogout, children, activeView, s
       `}>
         <div className="p-4 lg:p-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-cyan-600 rounded-lg flex items-center justify-center text-white font-bold shrink-0">N</div>
+            <img
+              src="/b2b logo.png"
+              alt="B2B Nexus logo"
+              className="w-8 h-8 rounded-lg border border-gray-200 object-cover shrink-0"
+            />
             {(isSidebarOpen || isMobileMenuOpen) && <span className="text-xl font-bold tracking-tight text-gray-900 truncate">B2B Nexus</span>}
           </div>
           <button className="lg:hidden text-gray-400 hover:text-gray-600" onClick={() => setIsMobileMenuOpen(false)}>
@@ -115,11 +119,11 @@ const Layout: React.FC<LayoutProps> = ({ user, onLogout, children, activeView, s
               onClick={() => handleNavClick(item.id)}
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all group ${
                 activeView === item.id 
-                ? 'bg-cyan-50 text-cyan-700 shadow-sm' 
+                ? 'bg-[#E6F6FA] text-[#057D97] shadow-sm' 
                 : 'text-gray-600 hover:bg-gray-100'
               }`}
             >
-              <item.icon className={`w-5 h-5 shrink-0 ${activeView === item.id ? 'text-cyan-700' : 'text-gray-400 group-hover:text-gray-600'}`} />
+              <item.icon className={`w-5 h-5 shrink-0 ${activeView === item.id ? 'text-[#057D97]' : 'text-gray-400 group-hover:text-gray-600'}`} />
               {(isSidebarOpen || isMobileMenuOpen) && <span className="font-semibold text-sm truncate">{item.label}</span>}
               {!isSidebarOpen && !isMobileMenuOpen && (
                 <div className="absolute left-16 bg-gray-900 text-white px-2 py-1 rounded text-[10px] opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 hidden lg:block">
@@ -166,7 +170,7 @@ const Layout: React.FC<LayoutProps> = ({ user, onLogout, children, activeView, s
               <input 
                 type="text" 
                 placeholder="Search..." 
-                className="w-full pl-10 pr-4 py-2 bg-gray-100 border-none rounded-xl text-sm focus:ring-2 focus:ring-cyan-500 transition-all"
+                className="w-full pl-10 pr-4 py-2 bg-gray-100 border-none rounded-xl text-sm focus:ring-2 focus:ring-[#0690AE] transition-all"
               />
             </div>
           </div>
@@ -178,7 +182,10 @@ const Layout: React.FC<LayoutProps> = ({ user, onLogout, children, activeView, s
             </div>
             
             <div className="flex items-center gap-2 md:gap-4">
-              <button className="relative p-2 text-gray-500 hover:bg-gray-100 rounded-lg transition-colors">
+              <button
+                onClick={() => handleNavClick(displayedUser?.role === Role.ADMIN ? 'settings' : 'messages')}
+                className="relative p-2 text-gray-500 hover:bg-gray-100 rounded-lg transition-colors"
+              >
                 <Bell size={18} />
                 <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
               </button>
@@ -188,9 +195,9 @@ const Layout: React.FC<LayoutProps> = ({ user, onLogout, children, activeView, s
               <div className="flex items-center gap-2 md:gap-3 cursor-pointer hover:opacity-80 transition-opacity">
                 <div className="text-right hidden sm:block">
                   <p className="text-xs md:text-sm font-bold text-gray-900 leading-none truncate max-w-[100px]">{displayedUser?.name}</p>
-                  <p className="text-[10px] text-cyan-700 mt-1 uppercase font-black tracking-widest">{displayedUser?.role}</p>
+                  <p className="text-[10px] text-[#057D97] mt-1 uppercase font-black tracking-widest">{displayedUser?.role}</p>
                 </div>
-                <div className="w-8 h-8 md:w-10 md:h-10 bg-cyan-600 rounded-xl flex items-center justify-center text-white font-black text-xs md:text-sm shadow-lg shadow-cyan-100 shrink-0">
+                <div className="w-8 h-8 md:w-10 md:h-10 bg-[#0690AE] rounded-xl flex items-center justify-center text-white font-black text-xs md:text-sm shadow-lg shadow-[#CDEEF5] shrink-0">
                   {displayedUser?.name?.charAt(0)}
                 </div>
               </div>

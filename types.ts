@@ -131,6 +131,16 @@ export interface User {
   name: string;
   companyId: string;
   hasSeenOnboarding?: boolean;
+  phone?: string;
+  firstName?: string;
+  lastName?: string;
+  companyName?: string;
+  gstNumber?: string;
+  industry?: string;
+  companyDomain?: string;
+  website?: string;
+  address?: string;
+  description?: string;
 }
 
 export interface Message {

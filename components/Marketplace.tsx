@@ -118,23 +118,23 @@ const Marketplace: React.FC<MarketplaceProps> = ({ products, companies, onInitia
 
   return (
     <div className="space-y-4 md:space-y-8 pb-12">
-      <div id="marketplace-hero" className="bg-cyan-700 rounded-[2rem] md:rounded-[3rem] p-6 md:p-10 text-white relative overflow-hidden shadow-2xl transition-all duration-500">
+      <div id="marketplace-hero" className="bg-[#057D97] rounded-[2rem] md:rounded-[3rem] p-6 md:p-10 text-white relative overflow-hidden shadow-2xl transition-all duration-500">
         <div className="absolute top-0 right-0 p-4 md:p-8 opacity-10 pointer-events-none">
           <Zap size={160} />
         </div>
         <div className="relative z-10 max-w-2xl">
           <h1 className="text-2xl md:text-4xl font-extrabold tracking-tight">Enterprise Source Engine</h1>
-          <p className="mt-2 md:mt-4 text-cyan-100 text-sm md:text-lg leading-relaxed max-w-lg">
+          <p className="mt-2 md:mt-4 text-[#CDEEF5] text-sm md:text-lg leading-relaxed max-w-lg">
             Direct access to the world's most reliable corporate partners. Multi-criteria vetting included.
           </p>
           
           <div className="mt-6 md:mt-8 flex flex-col gap-4">
             <div className="relative group">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-cyan-400 z-20" size={18} />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#38B7D0] z-20" size={18} />
               <input 
                 type="text"
                 placeholder="Search products or descriptions..."
-                className="w-full pl-12 pr-4 md:pr-12 py-4 md:py-5 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl focus:ring-2 focus:ring-white outline-none placeholder:text-cyan-200 text-sm md:text-base transition-all"
+                className="w-full pl-12 pr-4 md:pr-12 py-4 md:py-5 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl focus:ring-2 focus:ring-white outline-none placeholder:text-[#9EDDEA] text-sm md:text-base transition-all"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -148,7 +148,7 @@ const Marketplace: React.FC<MarketplaceProps> = ({ products, companies, onInitia
           <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm space-y-6">
             <div className="flex items-center justify-between">
               <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                <Filter size={14} /> Global Filters {activeFiltersCount > 0 && <span className="w-4 h-4 bg-cyan-100 text-cyan-700 rounded-full flex items-center justify-center text-[10px]">{activeFiltersCount}</span>}
+                <Filter size={14} /> Global Filters {activeFiltersCount > 0 && <span className="w-4 h-4 bg-[#CDEEF5] text-[#057D97] rounded-full flex items-center justify-center text-[10px]">{activeFiltersCount}</span>}
               </h3>
               <div className="flex gap-2">
                 <button 
@@ -165,7 +165,7 @@ const Marketplace: React.FC<MarketplaceProps> = ({ products, companies, onInitia
                 </button>
                 <button 
                   onClick={() => setShowFilterSaveModal(true)}
-                  className="p-1.5 hover:bg-gray-100 rounded-lg text-cyan-700 transition-colors"
+                  className="p-1.5 hover:bg-gray-100 rounded-lg text-[#057D97] transition-colors"
                   title="Save Filter View"
                 >
                   <Save size={16} />
@@ -181,13 +181,13 @@ const Marketplace: React.FC<MarketplaceProps> = ({ products, companies, onInitia
                     <div key={sf.id} className="group relative">
                       <button 
                         onClick={() => applySavedFilter(sf)}
-                        className="px-3 py-1.5 bg-cyan-50 text-cyan-700 rounded-lg text-[10px] font-black border border-cyan-100 hover:bg-cyan-100 pr-7"
+                        className="px-3 py-1.5 bg-[#E6F6FA] text-[#057D97] rounded-lg text-[10px] font-black border border-[#CDEEF5] hover:bg-[#CDEEF5] pr-7"
                       >
                         {sf.name}
                       </button>
                       <button 
                         onClick={() => removeSavedFilter(sf.id)}
-                        className="absolute right-1 top-1/2 -translate-y-1/2 p-1 text-cyan-300 hover:text-cyan-700 opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="absolute right-1 top-1/2 -translate-y-1/2 p-1 text-[#6DCDE0] hover:text-[#057D97] opacity-0 group-hover:opacity-100 transition-opacity"
                       >
                         <X size={12} />
                       </button>
@@ -207,7 +207,7 @@ const Marketplace: React.FC<MarketplaceProps> = ({ products, companies, onInitia
                       onClick={() => setSelectedCategory(cat)}
                       className={`px-3 py-1.5 rounded-xl text-[10px] font-black transition-all ${
                         selectedCategory === cat 
-                        ? 'bg-cyan-600 text-white shadow-lg shadow-cyan-100' 
+                        ? 'bg-[#0690AE] text-white shadow-lg shadow-[#CDEEF5]' 
                         : 'bg-gray-50 text-gray-500 hover:bg-gray-100'
                       }`}
                     >
@@ -220,14 +220,14 @@ const Marketplace: React.FC<MarketplaceProps> = ({ products, companies, onInitia
               <div className="pt-4 border-t border-gray-50">
                 <div className="flex items-center justify-between mb-2">
                   <label className="text-[10px] font-black text-gray-400 uppercase">Min Reputation</label>
-                  <span className="text-xs font-bold text-cyan-700">{minReputation}+ ★</span>
+                  <span className="text-xs font-bold text-[#057D97]">{minReputation}+</span>
                 </div>
                 <input 
                   type="range" 
                   min="0" max="5" step="0.5" 
                   value={minReputation}
                   onChange={(e) => setMinReputation(parseFloat(e.target.value))}
-                  className="w-full h-1.5 bg-gray-100 rounded-full appearance-none accent-cyan-600 cursor-pointer"
+                  className="w-full h-1.5 bg-gray-100 rounded-full appearance-none accent-[#0690AE] cursor-pointer"
                 />
               </div>
 
@@ -235,7 +235,7 @@ const Marketplace: React.FC<MarketplaceProps> = ({ products, companies, onInitia
                 <label className="text-[10px] font-black text-gray-400 uppercase">Verified Only</label>
                 <button 
                   onClick={() => setVerifiedOnly(!verifiedOnly)}
-                  className={`w-10 h-6 rounded-full p-1 transition-all ${verifiedOnly ? 'bg-cyan-600' : 'bg-gray-200'}`}
+                  className={`w-10 h-6 rounded-full p-1 transition-all ${verifiedOnly ? 'bg-[#0690AE]' : 'bg-gray-200'}`}
                 >
                   <div className={`w-4 h-4 bg-white rounded-full transition-all ${verifiedOnly ? 'translate-x-4' : 'translate-x-0'}`}></div>
                 </button>
@@ -243,17 +243,17 @@ const Marketplace: React.FC<MarketplaceProps> = ({ products, companies, onInitia
             </div>
           </div>
           
-          <div className="bg-cyan-900 p-6 rounded-3xl text-white shadow-lg">
+          <div className="bg-[#034E5E] p-6 rounded-3xl text-white shadow-lg">
              <h4 className="text-xs font-black uppercase tracking-widest mb-4 flex items-center gap-2">
-               <TrendingUp size={14} className="text-cyan-400" /> AI Insights
+               <TrendingUp size={14} className="text-[#38B7D0]" /> AI Insights
              </h4>
              <div className="space-y-4">
                {trends.length > 0 ? trends.map((t, i) => (
-                 <div key={i} className="text-xs font-medium text-cyan-100 leading-relaxed italic bg-white/5 p-3 rounded-xl border border-white/10">
+                 <div key={i} className="text-xs font-medium text-[#CDEEF5] leading-relaxed italic bg-white/5 p-3 rounded-xl border border-white/10">
                    {t}
                  </div>
                )) : (
-                 <div className="text-xs text-cyan-400 animate-pulse">Scanning market signals...</div>
+                 <div className="text-xs text-[#38B7D0] animate-pulse">Scanning market signals...</div>
                )}
              </div>
           </div>
@@ -267,8 +267,8 @@ const Marketplace: React.FC<MarketplaceProps> = ({ products, companies, onInitia
             </div>
             <div className="flex items-center gap-4">
               <div className="flex bg-gray-100 p-1 rounded-xl">
-                <button onClick={() => setIsGridView(true)} className={`p-2 rounded-lg ${isGridView ? 'bg-white shadow-sm text-cyan-700' : 'text-gray-500'}`}><Grid size={18} /></button>
-                <button onClick={() => setIsGridView(false)} className={`p-2 rounded-lg ${!isGridView ? 'bg-white shadow-sm text-cyan-700' : 'text-gray-500'}`}><List size={18} /></button>
+                <button onClick={() => setIsGridView(true)} className={`p-2 rounded-lg ${isGridView ? 'bg-white shadow-sm text-[#057D97]' : 'text-gray-500'}`}><Grid size={18} /></button>
+                <button onClick={() => setIsGridView(false)} className={`p-2 rounded-lg ${!isGridView ? 'bg-white shadow-sm text-[#057D97]' : 'text-gray-500'}`}><List size={18} /></button>
               </div>
             </div>
           </div>
@@ -288,7 +288,7 @@ const Marketplace: React.FC<MarketplaceProps> = ({ products, companies, onInitia
                 >
                   {company?.verified && (
                     <div className="absolute top-4 right-4 z-20">
-                      <div className="bg-cyan-600 text-white px-3 py-1.5 rounded-2xl shadow-xl flex items-center gap-1.5 border border-white/20 backdrop-blur-md">
+                      <div className="bg-[#0690AE] text-white px-3 py-1.5 rounded-2xl shadow-xl flex items-center gap-1.5 border border-white/20 backdrop-blur-md">
                         <ShieldCheck size={14} fill="currentColor" />
                         <span className="text-[10px] font-black uppercase tracking-widest">Verified</span>
                       </div>
@@ -302,7 +302,7 @@ const Marketplace: React.FC<MarketplaceProps> = ({ products, companies, onInitia
                     {/* Detailed Risk UI */}
                     <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
                        <div className={`px-3 py-1.5 rounded-xl backdrop-blur-md border border-white/30 text-white flex items-center gap-2 shadow-xl ${
-                         riskScore < 30 ? 'bg-green-600/60' : riskScore < 60 ? 'bg-amber-600/60' : 'bg-red-600/60'
+                         riskScore < 30 ? 'bg-green-600/60' : riskScore < 60 ? 'bg-[#0690AE]/60' : 'bg-red-600/60'
                        }`}>
                          <AlertTriangle size={14} />
                          <span className="text-[10px] font-black uppercase">Risk Index: {riskScore}</span>
@@ -312,8 +312,8 @@ const Marketplace: React.FC<MarketplaceProps> = ({ products, companies, onInitia
                          <div className="bg-white/90 backdrop-blur px-3 py-1.5 rounded-xl animate-in fade-in slide-in-from-bottom-2 duration-300">
                            <div className="flex gap-1">
                              <div className={`w-1 h-3 rounded-full ${company?.verified ? 'bg-green-500' : 'bg-red-500'}`}></div>
-                             <div className={`w-1 h-3 rounded-full ${(company?.reputation || 0) > 4 ? 'bg-green-500' : 'bg-amber-500'}`}></div>
-                             <div className={`w-1 h-3 rounded-full ${product.price < 5000 ? 'bg-green-500' : 'bg-amber-500'}`}></div>
+                             <div className={`w-1 h-3 rounded-full ${(company?.reputation || 0) > 4 ? 'bg-green-500' : 'bg-[#0690AE]'}`}></div>
+                             <div className={`w-1 h-3 rounded-full ${product.price < 5000 ? 'bg-green-500' : 'bg-[#0690AE]'}`}></div>
                            </div>
                          </div>
                        )}
@@ -323,14 +323,14 @@ const Marketplace: React.FC<MarketplaceProps> = ({ products, companies, onInitia
                   <div className="p-6 md:p-8 flex flex-col flex-1">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-3">
-                        <span className="text-[10px] font-black text-cyan-700 uppercase tracking-widest bg-cyan-50 px-2.5 py-1 rounded-lg">{product.category}</span>
-                        <span className="text-gray-300">•</span>
+                        <span className="text-[10px] font-black text-[#057D97] uppercase tracking-widest bg-[#E6F6FA] px-2.5 py-1 rounded-lg">{product.category}</span>
+                        <span className="text-gray-300">|</span>
                         <div className="flex items-center gap-1.5">
                           <span className="text-[10px] font-bold text-gray-500 truncate max-w-[100px]">{company?.name}</span>
-                          <span className="text-[10px] text-amber-500 font-bold flex items-center bg-amber-50 px-2 py-0.5 rounded-lg"><Star size={10} fill="currentColor" className="mr-1" /> {company?.reputation}</span>
+                          <span className="text-[10px] text-[#0690AE] font-bold flex items-center bg-[#E6F6FA] px-2 py-0.5 rounded-lg"><Star size={10} fill="currentColor" className="mr-1" /> {company?.reputation}</span>
                         </div>
                       </div>
-                      <h3 className="text-lg font-black text-gray-900 line-clamp-1 mb-2 group-hover:text-cyan-700 transition-colors">{product.name}</h3>
+                      <h3 className="text-lg font-black text-gray-900 line-clamp-1 mb-2 group-hover:text-[#057D97] transition-colors">{product.name}</h3>
                       <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed mb-6 italic">"{product.description}"</p>
                     </div>
 
@@ -341,7 +341,7 @@ const Marketplace: React.FC<MarketplaceProps> = ({ products, companies, onInitia
                       </div>
                       <button 
                         onClick={() => onInitiateDeal(product.id)}
-                        className="px-6 py-3 bg-cyan-600 text-white text-xs font-black rounded-2xl hover:bg-gray-900 transition-all shadow-xl shadow-cyan-100 flex items-center gap-2 group/btn"
+                        className="px-6 py-3 bg-[#0690AE] text-white text-xs font-black rounded-2xl hover:bg-gray-900 transition-all shadow-xl shadow-[#CDEEF5] flex items-center gap-2 group/btn"
                       >
                         Initiate <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
                       </button>
@@ -366,7 +366,7 @@ const Marketplace: React.FC<MarketplaceProps> = ({ products, companies, onInitia
                   setVerifiedOnly(false);
                   setSearchQuery('');
                 }}
-                className="mt-10 px-10 py-4 bg-cyan-600 text-white font-black rounded-2xl shadow-2xl"
+                className="mt-10 px-10 py-4 bg-[#0690AE] text-white font-black rounded-2xl shadow-2xl"
               >
                 Clear All Filters
               </button>
@@ -388,14 +388,14 @@ const Marketplace: React.FC<MarketplaceProps> = ({ products, companies, onInitia
                   type="text" 
                   placeholder="e.g., Tech Verified Low Risk"
                   autoFocus
-                  className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:ring-4 focus:ring-cyan-500/10 text-sm font-bold transition-all"
+                  className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:ring-4 focus:ring-[#0690AE]/10 text-sm font-bold transition-all"
                   value={newFilterName}
                   onChange={(e) => setNewFilterName(e.target.value)}
                 />
               </div>
               <div className="flex gap-4">
                 <button onClick={() => setShowFilterSaveModal(false)} className="flex-1 py-4 bg-gray-100 text-gray-500 font-black rounded-2xl text-xs uppercase tracking-widest">Cancel</button>
-                <button onClick={saveFilter} className="flex-1 py-4 bg-cyan-600 text-white font-black rounded-2xl text-xs uppercase tracking-widest shadow-xl shadow-cyan-100">Save View</button>
+                <button onClick={saveFilter} className="flex-1 py-4 bg-[#0690AE] text-white font-black rounded-2xl text-xs uppercase tracking-widest shadow-xl shadow-[#CDEEF5]">Save View</button>
               </div>
             </div>
           </div>

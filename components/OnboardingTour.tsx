@@ -35,14 +35,14 @@ const steps: TourStep[] = [
     id: 'intro',
     title: 'Institutional Grade Commerce',
     desc: 'Welcome to B2B Nexus. You are now part of a secure network for high-velocity enterprise trade. Let\'s walk through your infrastructure.',
-    icon: <MousePointer2 className="text-cyan-700" size={32} />,
+    icon: <MousePointer2 className="text-[#057D97]" size={32} />,
     position: 'center'
   },
   {
     id: 'nav',
     title: 'Control Center',
     desc: 'The sidebar is your global navigation hub. Access the Marketplace, your active Deals, and platform Analytics from here.',
-    icon: <LayoutDashboard className="text-cyan-700" size={32} />,
+    icon: <LayoutDashboard className="text-[#057D97]" size={32} />,
     targetId: 'sidebar-nav',
     position: 'right'
   },
@@ -50,7 +50,7 @@ const steps: TourStep[] = [
     id: 'marketplace',
     title: 'Strategic Sourcing',
     desc: 'Discover verified products from global partners. Every item includes a real-time Risk Index to protect your procurement chain.',
-    icon: <Sparkles className="text-cyan-700" size={32} />,
+    icon: <Sparkles className="text-[#057D97]" size={32} />,
     targetId: 'marketplace-hero',
     view: 'marketplace',
     position: 'bottom'
@@ -59,7 +59,7 @@ const steps: TourStep[] = [
     id: 'registry',
     title: 'Entity Intelligence',
     desc: 'Browse the Registry to view audited balance sheets, GST filings, and reputation scores for every node in the network.',
-    icon: <Building2 className="text-cyan-700" size={32} />,
+    icon: <Building2 className="text-[#057D97]" size={32} />,
     targetId: 'companies-view-header',
     view: 'companies',
     position: 'bottom'
@@ -68,7 +68,7 @@ const steps: TourStep[] = [
     id: 'deals',
     title: 'Governance Workspace',
     desc: 'Manage milestones and legal agreements. Our AI-powered Deal Workspace ensures every multi-party contract is technically sound.',
-    icon: <Handshake className="text-cyan-700" size={32} />,
+    icon: <Handshake className="text-[#057D97]" size={32} />,
     targetId: 'deal-workspace-view',
     view: 'deals',
     position: 'top'
@@ -77,7 +77,7 @@ const steps: TourStep[] = [
     id: 'compliance',
     title: 'Immutable Vault',
     desc: 'Open the Compliance tab to access your audit reports and trust certificates in one place.',
-    icon: <ShieldCheck className="text-cyan-700" size={32} />,
+    icon: <ShieldCheck className="text-[#057D97]" size={32} />,
     targetId: 'settings-compliance-tab',
     view: 'settings',
     position: 'right'
@@ -223,7 +223,7 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({ onComplete, setActiveVi
       {/* Highlight Cutout */}
       {coords && steps[currentStep].position !== 'center' && (
         <div 
-          className="absolute z-[1010] border-4 border-cyan-500 rounded-3xl shadow-[0_0_0_9999px_rgba(17,24,39,0.75)] transition-all duration-500 pointer-events-none"
+          className="absolute z-[1010] border-4 border-[#0690AE] rounded-3xl shadow-[0_0_0_9999px_rgba(17,24,39,0.75)] transition-all duration-500 pointer-events-none"
           style={{
             top: coords.top - 8,
             left: coords.left - 8,
@@ -231,7 +231,7 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({ onComplete, setActiveVi
             height: coords.height + 16
           }}
         >
-          <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-cyan-600 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full whitespace-nowrap shadow-xl">
+          <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-[#0690AE] text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full whitespace-nowrap shadow-xl">
             Focus Node
           </div>
         </div>
@@ -240,35 +240,35 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({ onComplete, setActiveVi
       {/* Tooltip Modal */}
       <div 
         ref={tourRef}
-        className="fixed z-[1020] w-[90vw] max-w-lg max-h-[85vh] overflow-y-auto bg-white rounded-[2.5rem] shadow-2xl p-10 pointer-events-auto transition-all duration-500 ease-out border border-gray-100"
+        className="fixed z-[1020] w-[92vw] max-w-lg max-h-[92vh] overflow-y-auto bg-white rounded-[2rem] shadow-2xl p-5 sm:p-8 md:p-10 pointer-events-auto transition-all duration-500 ease-out border border-gray-100"
         style={tooltipStyles}
       >
         <button 
           onClick={onComplete} 
-          className="absolute top-8 right-8 text-gray-400 hover:text-gray-600 p-2 hover:bg-gray-100 rounded-full transition-all"
+          className="absolute right-4 top-4 text-gray-400 hover:text-gray-600 p-2 hover:bg-gray-100 rounded-full transition-all sm:right-8 sm:top-8"
         >
           <X size={20} />
         </button>
 
         <div className="flex flex-col items-center text-center">
-          <div className="w-16 h-16 bg-cyan-50 rounded-2xl flex items-center justify-center mb-8 shadow-inner animate-bounce">
+          <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#E6F6FA] shadow-inner animate-bounce sm:mb-8">
             {steps[currentStep].icon}
           </div>
           
           <div className="inline-flex items-center gap-2 mb-4">
-             <span className="w-1.5 h-1.5 bg-cyan-500 rounded-full"></span>
-             <p className="text-[10px] font-black text-cyan-700 uppercase tracking-[0.2em]">Step {currentStep + 1} of {steps.length}</p>
+             <span className="w-1.5 h-1.5 bg-[#0690AE] rounded-full"></span>
+             <p className="text-[10px] font-black text-[#057D97] uppercase tracking-[0.2em]">Step {currentStep + 1} of {steps.length}</p>
           </div>
 
-          <h3 className="text-2xl md:text-3xl font-black text-gray-900 mb-4 tracking-tight">
+          <h3 className="mb-4 text-2xl font-black tracking-tight text-gray-900 md:text-3xl">
             {steps[currentStep].title}
           </h3>
-          <p className="text-gray-500 font-medium leading-relaxed mb-10 text-sm md:text-base">
+          <p className="mb-8 text-sm font-medium leading-relaxed text-gray-500 md:mb-10 md:text-base">
             {steps[currentStep].desc}
           </p>
         </div>
 
-        <div className="flex items-center justify-between pt-4">
+        <div className="flex flex-wrap items-center justify-between gap-4 pt-4">
           <button 
             onClick={prev}
             disabled={currentStep === 0}
@@ -276,16 +276,10 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({ onComplete, setActiveVi
           >
             <ChevronLeft size={16} /> Previous
           </button>
-          
-          <div className="flex gap-2">
-            {steps.map((_, i) => (
-              <div key={i} className={`h-1.5 rounded-full transition-all duration-500 ${currentStep === i ? 'w-8 bg-cyan-600' : 'w-1.5 bg-gray-200'}`}></div>
-            ))}
-          </div>
 
           <button 
             onClick={next}
-            className="flex items-center gap-2 px-8 py-4 bg-cyan-600 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-gray-900 transition-all shadow-xl shadow-cyan-200 active:scale-95"
+            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#0690AE] px-8 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-white transition-all shadow-xl shadow-[#9EDDEA] hover:bg-gray-900 active:scale-95 sm:w-auto"
           >
             {currentStep === steps.length - 1 ? 'Go Live' : 'Continue'} <ChevronRight size={16} />
           </button>

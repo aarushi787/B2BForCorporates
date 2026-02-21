@@ -63,6 +63,14 @@ const Messaging: React.FC<MessagingProps> = ({ currentUser, companies, deals, me
     setShowSharedView(false);
   };
 
+  const handleMoreOptions = () => {
+    setShowSharedView(true);
+  };
+
+  const handleSmartAssist = () => {
+    setInputText('Could you share milestone updates and any blockers for this week?');
+  };
+
   return (
     <div className="flex h-full bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
       {/* Contact List */}
@@ -74,7 +82,7 @@ const Messaging: React.FC<MessagingProps> = ({ currentUser, companies, deals, me
             <input 
               type="text" 
               placeholder="Search conversations..." 
-              className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-cyan-500"
+              className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#0690AE]"
             />
           </div>
         </div>
@@ -89,14 +97,14 @@ const Messaging: React.FC<MessagingProps> = ({ currentUser, companies, deals, me
                 : 'hover:bg-white/50'
               }`}
             >
-              <div className="w-12 h-12 bg-cyan-100 rounded-xl flex items-center justify-center text-cyan-700 font-black shrink-0">
+              <div className="w-12 h-12 bg-[#CDEEF5] rounded-xl flex items-center justify-center text-[#057D97] font-black shrink-0">
                 {company.name.charAt(0)}
               </div>
               <div className="text-left flex-1 min-w-0">
                 <p className="font-bold text-gray-900 truncate">{company.name}</p>
                 <p className="text-xs text-gray-400 truncate uppercase tracking-widest">{company.domain}</p>
               </div>
-              {company.verified && <div className="w-2 h-2 bg-cyan-500 rounded-full"></div>}
+              {company.verified && <div className="w-2 h-2 bg-[#0690AE] rounded-full"></div>}
             </button>
           ))}
         </div>
@@ -109,7 +117,7 @@ const Messaging: React.FC<MessagingProps> = ({ currentUser, companies, deals, me
             {/* Header */}
             <div className="h-20 px-8 border-b border-gray-100 flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 bg-cyan-600 rounded-lg flex items-center justify-center text-white font-black">
+                <div className="w-10 h-10 bg-[#0690AE] rounded-lg flex items-center justify-center text-white font-black">
                   {selectedCompany.name.charAt(0)}
                 </div>
                 <div>
@@ -124,10 +132,10 @@ const Messaging: React.FC<MessagingProps> = ({ currentUser, companies, deals, me
                 {activeDeal && (
                   <div className="hidden md:flex flex-col text-right">
                     <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Active Deal</span>
-                    <span className="text-xs font-bold text-cyan-700">DEAL-{activeDeal.id.toUpperCase()}</span>
+                    <span className="text-xs font-bold text-[#057D97]">DEAL-{activeDeal.id.toUpperCase()}</span>
                   </div>
                 )}
-                <button className="p-2 text-gray-400 hover:bg-gray-50 rounded-lg"><MoreHorizontal size={20} /></button>
+                <button onClick={handleMoreOptions} className="p-2 text-gray-400 hover:bg-gray-50 rounded-lg"><MoreHorizontal size={20} /></button>
               </div>
             </div>
 
@@ -147,7 +155,7 @@ const Messaging: React.FC<MessagingProps> = ({ currentUser, companies, deals, me
                   <div className={`max-w-[70%] group`}>
                     <div className={`p-4 rounded-2xl shadow-sm ${
                       msg.senderId === currentUser.companyId 
-                      ? 'bg-cyan-600 text-white rounded-tr-none' 
+                      ? 'bg-[#0690AE] text-white rounded-tr-none' 
                       : 'bg-white text-gray-900 border border-gray-100 rounded-tl-none'
                     }`}>
                       <p className="text-sm leading-relaxed">{msg.content}</p>
@@ -162,8 +170,8 @@ const Messaging: React.FC<MessagingProps> = ({ currentUser, companies, deals, me
 
             {/* Footer */}
             <div className="p-6 bg-white border-t border-gray-100">
-              <div className="flex items-center gap-4 bg-gray-50 p-2 rounded-2xl border border-gray-100 focus-within:ring-2 focus-within:ring-cyan-500 transition-all">
-                <button className="p-3 text-gray-400 hover:text-cyan-700 transition-colors">
+              <div className="flex items-center gap-4 bg-gray-50 p-2 rounded-2xl border border-gray-100 focus-within:ring-2 focus-within:ring-[#0690AE] transition-all">
+                <button onClick={handleSmartAssist} className="p-3 text-gray-400 hover:text-[#057D97] transition-colors">
                   <Sparkles size={20} />
                 </button>
                 <input 
@@ -177,14 +185,14 @@ const Messaging: React.FC<MessagingProps> = ({ currentUser, companies, deals, me
                 <button 
                   onClick={handleSend}
                   disabled={!inputText.trim()}
-                  className="p-3 bg-cyan-600 text-white rounded-xl hover:bg-cyan-700 transition-all disabled:opacity-50 shadow-lg shadow-cyan-100"
+                  className="p-3 bg-[#0690AE] text-white rounded-xl hover:bg-[#057D97] transition-all disabled:opacity-50 shadow-lg shadow-[#CDEEF5]"
                 >
                   <Send size={18} />
                 </button>
               </div>
               <div className="mt-4 flex gap-4">
-                <button onClick={() => setShowAttachContract(true)} className="text-[10px] font-black text-gray-400 uppercase tracking-widest hover:text-cyan-700 transition-colors">📎 Attach Contract</button>
-                <button onClick={() => setShowSharedView(true)} className="text-[10px] font-black text-gray-400 uppercase tracking-widest hover:text-cyan-700 transition-colors">📊 Shared View</button>
+                <button onClick={() => setShowAttachContract(true)} className="text-[10px] font-black text-gray-400 uppercase tracking-widest hover:text-[#057D97] transition-colors">Attach Contract</button>
+                <button onClick={() => setShowSharedView(true)} className="text-[10px] font-black text-gray-400 uppercase tracking-widest hover:text-[#057D97] transition-colors">Shared View</button>
               </div>
             </div>
           </>
@@ -211,9 +219,9 @@ const Messaging: React.FC<MessagingProps> = ({ currentUser, companies, deals, me
                 <button 
                   key={doc}
                   onClick={() => handleAttachContractAction(doc)}
-                  className="w-full flex items-center gap-4 p-4 bg-gray-50 rounded-2xl border border-gray-100 hover:border-cyan-200 hover:bg-cyan-50 transition-all group"
+                  className="w-full flex items-center gap-4 p-4 bg-gray-50 rounded-2xl border border-gray-100 hover:border-[#9EDDEA] hover:bg-[#E6F6FA] transition-all group"
                 >
-                  <FileText className="text-cyan-700" size={20} />
+                  <FileText className="text-[#057D97]" size={20} />
                   <span className="text-sm font-bold text-gray-700">{doc.replace(/_/g, ' ')}</span>
                 </button>
               ))}
@@ -230,24 +238,24 @@ const Messaging: React.FC<MessagingProps> = ({ currentUser, companies, deals, me
             <h3 className="text-xl font-black text-gray-900 mb-2">Share Deal Analytics</h3>
             <p className="text-xs text-gray-500 mb-8 font-medium">This will post a summary of current deal health and revenue splits to the conversation.</p>
             
-            <div className="p-6 bg-cyan-900 rounded-3xl text-white mb-8">
+            <div className="p-6 bg-[#034E5E] rounded-3xl text-white mb-8">
                <div className="flex items-center justify-between mb-4">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-cyan-400">Deal Velocity Snapshot</span>
-                  <ShieldCheck size={18} className="text-cyan-400" />
+                  <span className="text-[10px] font-black uppercase tracking-widest text-[#38B7D0]">Deal Velocity Snapshot</span>
+                  <ShieldCheck size={18} className="text-[#38B7D0]" />
                </div>
                <div className="grid grid-cols-2 gap-4">
                  <div>
                    <p className="text-2xl font-black">92%</p>
-                   <p className="text-[10px] font-bold uppercase text-cyan-300">Success Rate</p>
+                   <p className="text-[10px] font-bold uppercase text-[#6DCDE0]">Success Rate</p>
                  </div>
                  <div>
                    <p className="text-2xl font-black">12.4d</p>
-                   <p className="text-[10px] font-bold uppercase text-cyan-300">Settlement Avg</p>
+                   <p className="text-[10px] font-bold uppercase text-[#6DCDE0]">Settlement Avg</p>
                  </div>
                </div>
             </div>
 
-            <button onClick={handleShareViewAction} className="w-full py-4 bg-cyan-600 text-white font-black rounded-2xl shadow-xl shadow-cyan-100 flex items-center justify-center gap-2">
+            <button onClick={handleShareViewAction} className="w-full py-4 bg-[#0690AE] text-white font-black rounded-2xl shadow-xl shadow-[#CDEEF5] flex items-center justify-center gap-2">
               Share Intelligence View <LayoutDashboard size={18} />
             </button>
           </div>

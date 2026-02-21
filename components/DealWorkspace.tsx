@@ -141,10 +141,28 @@ const DealWorkspace: React.FC<DealWorkspaceProps> = ({ deal, companies, onUpdate
     onUpdate({ ...deal, contracts: updatedContracts });
   };
 
+  const handleDownloadAuditLog = () => {
+    const payload = [
+      `Deal ID: ${deal.id}`,
+      `Status: ${deal.status}`,
+      `Updated: ${deal.updatedAt}`,
+      `Checksum: 8a7c...2e9f`,
+    ].join('\n');
+    const blob = new Blob([payload], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `deal-${deal.id}-audit-log.txt`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  };
+
   const riskAssessment = useMemo(() => {
     const score = deal.riskScore || 24;
     if (score < 30) return { label: 'Low Risk', color: 'text-green-600', bg: 'bg-green-50' };
-    if (score < 70) return { label: 'Moderate Risk', color: 'text-amber-600', bg: 'bg-amber-50' };
+    if (score < 70) return { label: 'Moderate Risk', color: 'text-[#0690AE]', bg: 'bg-[#E6F6FA]' };
     return { label: 'High Risk', color: 'text-red-600', bg: 'bg-red-50' };
   }, [deal.riskScore]);
 
@@ -153,13 +171,13 @@ const DealWorkspace: React.FC<DealWorkspaceProps> = ({ deal, companies, onUpdate
       {/* Header Info */}
       <div id="deal-header" className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm">
         <div className="flex items-center gap-6">
-          <div className="w-16 h-16 bg-cyan-600 rounded-3xl flex items-center justify-center text-white shadow-xl shadow-cyan-100">
+          <div className="w-16 h-16 bg-[#0690AE] rounded-3xl flex items-center justify-center text-white shadow-xl shadow-[#CDEEF5]">
             <HandshakeIcon />
           </div>
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-[10px] font-black text-cyan-700 uppercase tracking-widest bg-cyan-50 px-2.5 py-1 rounded-lg">Operational Node</span>
-              <span className="text-gray-300">•</span>
+              <span className="text-[10px] font-black text-[#057D97] uppercase tracking-widest bg-[#E6F6FA] px-2.5 py-1 rounded-lg">Operational Node</span>
+              <span className="text-gray-300">|</span>
               <span className="text-xs font-bold text-gray-500 tracking-wider">DEAL-{deal.id.toUpperCase()}</span>
             </div>
             <h1 className="text-2xl font-black text-gray-900 tracking-tight">{deal.notes.split('.')[0]}</h1>
@@ -177,7 +195,7 @@ const DealWorkspace: React.FC<DealWorkspaceProps> = ({ deal, companies, onUpdate
             </div>
           </div>
           <div className="h-10 w-px bg-gray-100 hidden lg:block"></div>
-          <button onClick={() => setShowLedgerTrace(true)} className="px-6 py-3 bg-cyan-600 text-white font-black rounded-2xl hover:bg-gray-900 transition-all shadow-xl shadow-cyan-100 text-xs uppercase tracking-widest flex items-center gap-2">
+          <button onClick={() => setShowLedgerTrace(true)} className="px-6 py-3 bg-[#0690AE] text-white font-black rounded-2xl hover:bg-gray-900 transition-all shadow-xl shadow-[#CDEEF5] text-xs uppercase tracking-widest flex items-center gap-2">
             <Fingerprint size={16} /> View Ledger Trace
           </button>
         </div>
@@ -195,7 +213,7 @@ const DealWorkspace: React.FC<DealWorkspaceProps> = ({ deal, companies, onUpdate
               onClick={() => setActiveWorkspaceTab(tab.id as any)}
               className={`w-full flex items-center gap-3 p-4 rounded-2xl transition-all font-bold text-sm ${
                 activeWorkspaceTab === tab.id 
-                ? 'bg-white shadow-lg text-cyan-700 border border-cyan-50' 
+                ? 'bg-white shadow-lg text-[#057D97] border border-[#E6F6FA]' 
                 : 'text-gray-500 hover:bg-white/50'
               }`}
             >
@@ -207,16 +225,16 @@ const DealWorkspace: React.FC<DealWorkspaceProps> = ({ deal, companies, onUpdate
              <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4">Involved Entities</h4>
              <div className="space-y-3">
                 <div className="flex items-center gap-3 p-3 bg-white rounded-xl border border-gray-100 shadow-sm group">
-                   <div className="w-8 h-8 bg-cyan-50 rounded-lg flex items-center justify-center text-cyan-700 font-black text-xs group-hover:bg-cyan-600 group-hover:text-white transition-colors">B</div>
+                   <div className="w-8 h-8 bg-[#E6F6FA] rounded-lg flex items-center justify-center text-[#057D97] font-black text-xs group-hover:bg-[#0690AE] group-hover:text-white transition-colors">B</div>
                    <span className="text-xs font-bold text-gray-700 truncate">{buyer?.name}</span>
                 </div>
                 {sellers.map(s => (
                   <div key={s.id} className="flex items-center gap-3 p-3 bg-white rounded-xl border border-gray-100 shadow-sm group">
-                     <div className="w-8 h-8 bg-purple-50 rounded-lg flex items-center justify-center text-purple-700 font-black text-xs group-hover:bg-purple-600 group-hover:text-white transition-colors">S</div>
+                     <div className="w-8 h-8 bg-[#E6F6FA] rounded-lg flex items-center justify-center text-[#057D97] font-black text-xs group-hover:bg-[#0690AE] group-hover:text-white transition-colors">S</div>
                      <span className="text-xs font-bold text-gray-700 truncate">{s.name}</span>
                   </div>
                 ))}
-                <button onClick={() => setShowAddPartner(true)} className="w-full py-3 border-2 border-dashed border-gray-200 rounded-xl text-gray-400 font-bold text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 hover:border-cyan-300 hover:text-cyan-700 transition-all">
+                <button onClick={() => setShowAddPartner(true)} className="w-full py-3 border-2 border-dashed border-gray-200 rounded-xl text-gray-400 font-bold text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 hover:border-[#6DCDE0] hover:text-[#057D97] transition-all">
                    <UserPlus size={14} /> Add Partner
                 </button>
              </div>
@@ -229,17 +247,17 @@ const DealWorkspace: React.FC<DealWorkspaceProps> = ({ deal, companies, onUpdate
               <div id="deal-milestones" className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm">
                 <div className="flex items-center justify-between mb-8">
                   <h2 className="text-xl font-black text-gray-900 flex items-center gap-3">
-                    <Activity className="text-cyan-700" /> Milestone Execution
+                    <Activity className="text-[#057D97]" /> Milestone Execution
                   </h2>
-                  <button onClick={() => setShowAddMilestone(true)} className="flex items-center gap-2 px-4 py-2 bg-cyan-50 text-cyan-700 text-[10px] font-black rounded-xl hover:bg-cyan-100 transition-all uppercase tracking-widest">
+                  <button onClick={() => setShowAddMilestone(true)} className="flex items-center gap-2 px-4 py-2 bg-[#E6F6FA] text-[#057D97] text-[10px] font-black rounded-xl hover:bg-[#CDEEF5] transition-all uppercase tracking-widest">
                     <Plus size={14} /> Add Milestone
                   </button>
                 </div>
                 
                 <div className="space-y-4">
                   {deal.milestones.map((ms) => (
-                    <div key={ms.id} className="flex items-center gap-6 p-6 bg-gray-50 rounded-2xl border border-gray-100 group hover:border-cyan-200 transition-all cursor-pointer">
-                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${ms.status === 'PAID' ? 'bg-green-100 text-green-600' : 'bg-amber-100 text-amber-600'}`}>
+                    <div key={ms.id} className="flex items-center gap-6 p-6 bg-gray-50 rounded-2xl border border-gray-100 group hover:border-[#9EDDEA] transition-all cursor-pointer">
+                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${ms.status === 'PAID' ? 'bg-green-100 text-green-600' : 'bg-[#CDEEF5] text-[#0690AE]'}`}>
                         {ms.status === 'PAID' ? <CheckCircle size={24} /> : <Clock size={24} />}
                       </div>
                       <div className="flex-1">
@@ -251,7 +269,7 @@ const DealWorkspace: React.FC<DealWorkspaceProps> = ({ deal, companies, onUpdate
                       </div>
                       <div className="text-right">
                         <p className="font-black text-gray-900 text-lg tracking-tight">${ms.amount.toLocaleString()}</p>
-                        <p className={`text-[10px] font-black uppercase tracking-widest ${ms.status === 'PAID' ? 'text-green-600' : 'text-amber-600'}`}>{ms.status}</p>
+                        <p className={`text-[10px] font-black uppercase tracking-widest ${ms.status === 'PAID' ? 'text-green-600' : 'text-[#0690AE]'}`}>{ms.status}</p>
                       </div>
                     </div>
                   ))}
@@ -262,7 +280,7 @@ const DealWorkspace: React.FC<DealWorkspaceProps> = ({ deal, companies, onUpdate
                 <div className="flex items-center justify-between mb-8">
                   <h2 className="text-xl font-black text-gray-900">Legal Governance</h2>
                   <div className="flex gap-2">
-                    <button onClick={() => handleGenerateContract('NDA')} disabled={isGenerating} className="px-5 py-2.5 bg-cyan-600 text-white text-[10px] font-black rounded-xl shadow-xl shadow-cyan-100 flex items-center gap-2 uppercase tracking-widest group">
+                    <button onClick={() => handleGenerateContract('NDA')} disabled={isGenerating} className="px-5 py-2.5 bg-[#0690AE] text-white text-[10px] font-black rounded-xl shadow-xl shadow-[#CDEEF5] flex items-center gap-2 uppercase tracking-widest group">
                       {isGenerating ? <Loader2 className="animate-spin" size={14} /> : <Sparkles size={14} className="group-hover:rotate-12 transition-transform" />} AI Contract
                     </button>
                   </div>
@@ -272,12 +290,12 @@ const DealWorkspace: React.FC<DealWorkspaceProps> = ({ deal, companies, onUpdate
                   {deal.contracts.map(contract => (
                     <div key={contract.id} className="p-6 border border-gray-100 rounded-3xl bg-gray-50 hover:bg-white hover:shadow-2xl transition-all group/card">
                       <div className="flex items-center justify-between mb-4">
-                        <span className="px-2.5 py-1 bg-cyan-100 text-cyan-700 text-[10px] font-black rounded-lg uppercase tracking-wider">{contract.type} v{contract.version}</span>
-                        {contract.signedBy.length > 1 ? <ShieldCheck size={20} className="text-green-500" /> : <Clock size={20} className="text-amber-500" />}
+                        <span className="px-2.5 py-1 bg-[#CDEEF5] text-[#057D97] text-[10px] font-black rounded-lg uppercase tracking-wider">{contract.type} v{contract.version}</span>
+                        {contract.signedBy.length > 1 ? <ShieldCheck size={20} className="text-green-500" /> : <Clock size={20} className="text-[#0690AE]" />}
                       </div>
                       <h4 className="font-black text-gray-900 truncate mb-1">Agreement #{contract.id.toUpperCase()}</h4>
                       <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest">Signatures: {contract.signedBy.length}/2</p>
-                      <button onClick={() => handleSignContract(contract.id)} className="mt-6 w-full py-3 bg-white text-[10px] font-black text-cyan-700 border border-cyan-100 rounded-xl hover:bg-cyan-600 hover:text-white transition-all uppercase tracking-widest">
+                      <button onClick={() => handleSignContract(contract.id)} className="mt-6 w-full py-3 bg-white text-[10px] font-black text-[#057D97] border border-[#CDEEF5] rounded-xl hover:bg-[#0690AE] hover:text-white transition-all uppercase tracking-widest">
                         Affix Signature
                       </button>
                     </div>
@@ -291,7 +309,7 @@ const DealWorkspace: React.FC<DealWorkspaceProps> = ({ deal, companies, onUpdate
             <div className="animate-in fade-in slide-in-from-right-4 duration-300 space-y-8">
               <div className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm">
                  <h2 className="text-xl font-black text-gray-900 mb-8 flex items-center gap-3">
-                   <Percent className="text-cyan-700" /> Revenue Split Optimization
+                   <Percent className="text-[#057D97]" /> Revenue Split Optimization
                  </h2>
                  <div className="space-y-6">
                     {deal.revenueSplits.map((split) => {
@@ -299,7 +317,7 @@ const DealWorkspace: React.FC<DealWorkspaceProps> = ({ deal, companies, onUpdate
                       return (
                         <div key={split.companyId} className="flex items-center gap-8 p-6 bg-gray-50 rounded-3xl border border-gray-100">
                            <div className="flex items-center gap-4 flex-1">
-                             <div className="w-12 h-12 bg-white rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center font-black text-cyan-700">
+                             <div className="w-12 h-12 bg-white rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center font-black text-[#057D97]">
                                {company?.name.charAt(0)}
                              </div>
                              <div>
@@ -310,7 +328,7 @@ const DealWorkspace: React.FC<DealWorkspaceProps> = ({ deal, companies, onUpdate
                            <div className="w-48">
                               <div className="flex items-center justify-between mb-2">
                                 <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Stake</span>
-                                <span className="text-xs font-black text-cyan-700">{split.percentage}%</span>
+                                <span className="text-xs font-black text-[#057D97]">{split.percentage}%</span>
                               </div>
                               <input 
                                 type="range" 
@@ -318,7 +336,7 @@ const DealWorkspace: React.FC<DealWorkspaceProps> = ({ deal, companies, onUpdate
                                 max="100" 
                                 value={split.percentage} 
                                 onChange={(e) => handleUpdateSplit(split.companyId, parseInt(e.target.value))}
-                                className="w-full h-1.5 bg-cyan-100 rounded-full appearance-none cursor-pointer accent-cyan-600" 
+                                className="w-full h-1.5 bg-[#CDEEF5] rounded-full appearance-none cursor-pointer accent-[#0690AE]" 
                               />
                            </div>
                            <div className="text-right w-32">
@@ -338,8 +356,8 @@ const DealWorkspace: React.FC<DealWorkspaceProps> = ({ deal, companies, onUpdate
                     <div className="text-right">
                        <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mb-2">Allocation Status</p>
                        <div className="flex items-center gap-3">
-                         <div className={`w-3 h-3 rounded-full animate-pulse ${deal.revenueSplits.reduce((s, x) => s + x.percentage, 0) === 100 ? 'bg-green-400' : 'bg-amber-400'}`}></div>
-                         <p className={`text-3xl font-black tracking-tight ${deal.revenueSplits.reduce((s, x) => s + x.percentage, 0) === 100 ? 'text-white' : 'text-amber-400'}`}>
+                         <div className={`w-3 h-3 rounded-full animate-pulse ${deal.revenueSplits.reduce((s, x) => s + x.percentage, 0) === 100 ? 'bg-green-400' : 'bg-[#38B7D0]'}`}></div>
+                         <p className={`text-3xl font-black tracking-tight ${deal.revenueSplits.reduce((s, x) => s + x.percentage, 0) === 100 ? 'text-white' : 'text-[#38B7D0]'}`}>
                            {deal.revenueSplits.reduce((s, x) => s + x.percentage, 0)}%
                          </p>
                        </div>
@@ -354,12 +372,12 @@ const DealWorkspace: React.FC<DealWorkspaceProps> = ({ deal, companies, onUpdate
               <div className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm">
                  <div className="flex items-center justify-between mb-8">
                     <h2 className="text-xl font-black text-gray-900 flex items-center gap-3">
-                      <Sparkles className="text-cyan-700" /> Platform Intelligence Analysis
+                      <Sparkles className="text-[#057D97]" /> Platform Intelligence Analysis
                     </h2>
                     <button 
                       onClick={runRiskAnalysis}
                       disabled={isAnalyzingRisk}
-                      className="px-4 py-2 bg-cyan-50 text-cyan-700 text-[10px] font-black rounded-xl hover:bg-cyan-100 transition-all uppercase tracking-widest flex items-center gap-2"
+                      className="px-4 py-2 bg-[#E6F6FA] text-[#057D97] text-[10px] font-black rounded-xl hover:bg-[#CDEEF5] transition-all uppercase tracking-widest flex items-center gap-2"
                     >
                       {isAnalyzingRisk ? <Loader2 size={14} className="animate-spin" /> : <RotateCwIcon size={14} />} Re-Scan
                     </button>
@@ -373,7 +391,7 @@ const DealWorkspace: React.FC<DealWorkspaceProps> = ({ deal, companies, onUpdate
                          <span className="text-sm font-black text-gray-400 uppercase tracking-widest">/ 100</span>
                        </div>
                        <div className="mt-8">
-                         <p className="text-sm font-bold text-gray-900 mb-2 underline decoration-cyan-300">Executive Summary</p>
+                         <p className="text-sm font-bold text-gray-900 mb-2 underline decoration-[#6DCDE0]">Executive Summary</p>
                          <p className="text-xs font-medium text-gray-600 leading-relaxed italic">
                            {aiRiskResult ? aiRiskResult.recommendation : "Preliminary analysis suggests high counterparty trust but potential supply chain volatility in Phase 3."}
                          </p>
@@ -389,7 +407,7 @@ const DealWorkspace: React.FC<DealWorkspaceProps> = ({ deal, companies, onUpdate
                          'Historical Node Integrity'
                        ]).map((factor: string, i: number) => (
                          <div key={i} className="flex items-start gap-3 p-4 bg-gray-50 rounded-2xl border border-gray-100">
-                           <div className="w-6 h-6 bg-white rounded-lg flex items-center justify-center text-cyan-700 font-black text-[10px] border border-gray-200 shrink-0">
+                           <div className="w-6 h-6 bg-white rounded-lg flex items-center justify-center text-[#057D97] font-black text-[10px] border border-gray-200 shrink-0">
                              {i + 1}
                            </div>
                            <span className="text-xs font-bold text-gray-700 leading-tight">{factor}</span>
@@ -398,14 +416,14 @@ const DealWorkspace: React.FC<DealWorkspaceProps> = ({ deal, companies, onUpdate
                     </div>
                  </div>
 
-                 <div className="p-10 bg-cyan-600 rounded-[2.5rem] text-white flex flex-col md:flex-row items-center justify-between gap-8">
+                 <div className="p-10 bg-[#0690AE] rounded-[2.5rem] text-white flex flex-col md:flex-row items-center justify-between gap-8">
                     <div className="max-w-md">
                        <h4 className="text-xl font-black mb-2 flex items-center gap-2">
-                         <ShieldCheck size={24} className="text-cyan-300" /> Trust Sovereignty
+                         <ShieldCheck size={24} className="text-[#6DCDE0]" /> Trust Sovereignty
                        </h4>
-                       <p className="text-xs font-medium text-cyan-100 leading-relaxed">This deal is backed by our immutable ledger. Risk scores are updated in real-time as participants fulfill contractual obligations.</p>
+                       <p className="text-xs font-medium text-[#CDEEF5] leading-relaxed">This deal is backed by our immutable ledger. Risk scores are updated in real-time as participants fulfill contractual obligations.</p>
                     </div>
-                    <button onClick={() => setShowLedgerTrace(true)} className="px-8 py-4 bg-white text-cyan-700 font-black rounded-2xl text-xs uppercase tracking-widest shadow-2xl shadow-cyan-900/40 whitespace-nowrap">
+                    <button onClick={() => setShowLedgerTrace(true)} className="px-8 py-4 bg-white text-[#057D97] font-black rounded-2xl text-xs uppercase tracking-widest shadow-2xl shadow-[#034E5E]/40 whitespace-nowrap">
                        View Ledger Trace
                     </button>
                  </div>
@@ -427,7 +445,7 @@ const DealWorkspace: React.FC<DealWorkspaceProps> = ({ deal, companies, onUpdate
                 <input 
                   type="text" 
                   placeholder="e.g., Phase 2 Integration Completion"
-                  className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:ring-4 focus:ring-cyan-500/10 text-sm font-bold"
+                  className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:ring-4 focus:ring-[#0690AE]/10 text-sm font-bold"
                   value={newMilestone.title}
                   onChange={(e) => setNewMilestone({...newMilestone, title: e.target.value})}
                 />
@@ -438,7 +456,7 @@ const DealWorkspace: React.FC<DealWorkspaceProps> = ({ deal, companies, onUpdate
                   <input 
                     type="number" 
                     placeholder="5000"
-                    className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:ring-4 focus:ring-cyan-500/10 text-sm font-bold"
+                    className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:ring-4 focus:ring-[#0690AE]/10 text-sm font-bold"
                     value={newMilestone.amount}
                     onChange={(e) => setNewMilestone({...newMilestone, amount: Number(e.target.value)})}
                   />
@@ -447,13 +465,13 @@ const DealWorkspace: React.FC<DealWorkspaceProps> = ({ deal, companies, onUpdate
                   <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Target Date</label>
                   <input 
                     type="date" 
-                    className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:ring-4 focus:ring-cyan-500/10 text-sm font-bold"
+                    className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:ring-4 focus:ring-[#0690AE]/10 text-sm font-bold"
                     value={newMilestone.dueDate}
                     onChange={(e) => setNewMilestone({...newMilestone, dueDate: e.target.value})}
                   />
                 </div>
               </div>
-              <button onClick={handleAddMilestoneSubmit} className="w-full py-5 bg-cyan-600 text-white font-black rounded-2xl shadow-xl shadow-cyan-100 hover:bg-cyan-700 transition-all flex items-center justify-center gap-2">
+              <button onClick={handleAddMilestoneSubmit} className="w-full py-5 bg-[#0690AE] text-white font-black rounded-2xl shadow-xl shadow-[#CDEEF5] hover:bg-[#057D97] transition-all flex items-center justify-center gap-2">
                 Deploy Milestone Node <Activity size={18} />
               </button>
             </div>
@@ -474,15 +492,15 @@ const DealWorkspace: React.FC<DealWorkspaceProps> = ({ deal, companies, onUpdate
               <input 
                 type="text" 
                 placeholder="Search registry for verified companies..."
-                className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:ring-4 focus:ring-cyan-500/10 text-sm font-bold"
+                className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:ring-4 focus:ring-[#0690AE]/10 text-sm font-bold"
               />
             </div>
 
             <div className="space-y-3 max-h-60 overflow-y-auto pr-2 scrollbar-hide">
               {companies.filter(c => !deal.sellerIds.includes(c.id) && c.id !== deal.buyerId).map(c => (
-                <div key={c.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border border-gray-100 hover:border-cyan-200 transition-all group">
+                <div key={c.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border border-gray-100 hover:border-[#9EDDEA] transition-all group">
                    <div className="flex items-center gap-4">
-                     <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-cyan-700 font-black border border-gray-100">{c.name.charAt(0)}</div>
+                     <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-[#057D97] font-black border border-gray-100">{c.name.charAt(0)}</div>
                      <div>
                        <p className="font-bold text-gray-900 text-sm">{c.name}</p>
                        <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest">{c.domain}</p>
@@ -490,7 +508,7 @@ const DealWorkspace: React.FC<DealWorkspaceProps> = ({ deal, companies, onUpdate
                    </div>
                    <button 
                     onClick={() => handleAddPartner(c.id)}
-                    className="px-4 py-2 bg-white text-cyan-700 text-[10px] font-black rounded-lg border border-cyan-100 hover:bg-cyan-600 hover:text-white transition-all uppercase tracking-widest"
+                    className="px-4 py-2 bg-white text-[#057D97] text-[10px] font-black rounded-lg border border-[#CDEEF5] hover:bg-[#0690AE] hover:text-white transition-all uppercase tracking-widest"
                    >
                      INVITE
                    </button>
@@ -515,7 +533,7 @@ const DealWorkspace: React.FC<DealWorkspaceProps> = ({ deal, companies, onUpdate
                 </div>
                 <div>
                   <h3 className="text-3xl font-black text-gray-900">Immutable Ledger Trace</h3>
-                  <p className="text-xs text-cyan-700 font-black uppercase tracking-widest mt-1">Hashed Integrity Protocol Active</p>
+                  <p className="text-xs text-[#057D97] font-black uppercase tracking-widest mt-1">Hashed Integrity Protocol Active</p>
                 </div>
               </div>
 
@@ -532,7 +550,7 @@ const DealWorkspace: React.FC<DealWorkspaceProps> = ({ deal, companies, onUpdate
                   }))
                 ].map((log, i) => (
                   <div key={i} className="flex gap-8 relative">
-                    <div className="w-12 h-12 bg-white border border-gray-100 rounded-xl shadow-sm flex items-center justify-center text-gray-400 shrink-0 z-10 group-hover:text-cyan-700 transition-colors">
+                    <div className="w-12 h-12 bg-white border border-gray-100 rounded-xl shadow-sm flex items-center justify-center text-gray-400 shrink-0 z-10 group-hover:text-[#057D97] transition-colors">
                       <log.icon size={20} />
                     </div>
                     <div>
@@ -541,7 +559,7 @@ const DealWorkspace: React.FC<DealWorkspaceProps> = ({ deal, companies, onUpdate
                         <span className="text-[10px] text-gray-400 font-bold uppercase">{log.date}</span>
                       </div>
                       <p className="text-xs text-gray-500 font-medium leading-relaxed mb-1">{log.action}</p>
-                      <p className="text-[10px] font-black text-cyan-700 uppercase tracking-widest">Actor: {log.user}</p>
+                      <p className="text-[10px] font-black text-[#057D97] uppercase tracking-widest">Actor: {log.user}</p>
                     </div>
                   </div>
                 ))}
@@ -550,7 +568,7 @@ const DealWorkspace: React.FC<DealWorkspaceProps> = ({ deal, companies, onUpdate
             
             <div className="mt-12 pt-8 border-t border-gray-100 flex items-center justify-between">
               <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest">SHA-256 Checksum: 8a7c...2e9f</p>
-              <button className="flex items-center gap-2 text-cyan-700 font-black text-xs uppercase tracking-widest hover:underline">
+              <button onClick={handleDownloadAuditLog} className="flex items-center gap-2 text-[#057D97] font-black text-xs uppercase tracking-widest hover:underline">
                 Download Signed Audit Log <ArrowRight size={14} />
               </button>
             </div>

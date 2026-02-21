@@ -15,9 +15,10 @@ import {
   Rocket
 } from 'lucide-react';
 import { 
-  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
   PieChart, Pie, Cell, BarChart, Bar
 } from 'recharts';
+import SafeResponsiveContainer from './charts/SafeResponsiveContainer';
 
 interface InvestorPortalProps {
   onBack: () => void;
@@ -33,32 +34,40 @@ const tractionData = [
 ];
 
 const marketData = [
-  { name: 'TAM (Global B2B)', value: 14000, color: '#6366f1' },
-  { name: 'SAM (Digital B2B)', value: 4500, color: '#818cf8' },
-  { name: 'SOM (Vetted Cluster)', value: 850, color: '#a5b4fc' },
+  { name: 'TAM (Global B2B)', value: 14000, color: '#0690AE' },
+  { name: 'SAM (Digital B2B)', value: 4500, color: '#38B7D0' },
+  { name: 'SOM (Vetted Cluster)', value: 850, color: '#9EDDEA' },
 ];
 
 const InvestorPortal: React.FC<InvestorPortalProps> = ({ onBack }) => {
+  const handleDownloadDeck = () => {
+    window.open('https://docs.github.com/', '_blank', 'noopener,noreferrer');
+  };
+
+  const handleConnectFounders = () => {
+    window.open('mailto:founders@b2bnexus.io', '_blank');
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 pb-24 animate-in fade-in duration-700">
       {/* Header */}
       <header className="bg-gray-900 py-16 text-white overflow-hidden relative">
         <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none"><Target size={400} /></div>
         <div className="max-w-7xl mx-auto px-6 relative z-10">
-          <button onClick={onBack} className="flex items-center gap-2 text-cyan-400 font-black text-xs uppercase tracking-widest mb-10 hover:text-white transition-colors">
+          <button onClick={onBack} className="flex items-center gap-2 text-[#38B7D0] font-black text-xs uppercase tracking-widest mb-10 hover:text-white transition-colors">
             <ArrowLeft size={16} /> Back to Public Web
           </button>
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-10">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-cyan-600/30 text-cyan-400 rounded-full text-[10px] font-black uppercase tracking-widest mb-6 border border-cyan-500/20">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#0690AE]/30 text-[#38B7D0] rounded-full text-[10px] font-black uppercase tracking-widest mb-6 border border-[#0690AE]/20">
                 <ShieldCheck size={14} /> Confidential Intelligence
               </div>
               <h1 className="text-5xl font-black tracking-tight">Venture Intelligence Portal</h1>
               <p className="mt-4 text-gray-400 text-lg font-medium max-w-xl">Deep-dive into B2B Nexus traction, unit economics, and our roadmap to dominating the global B2B settlement layer.</p>
             </div>
             <div className="flex gap-4">
-              <button className="px-8 py-4 bg-white text-gray-900 font-black rounded-2xl hover:bg-cyan-50 transition-all text-xs uppercase tracking-widest">Download Pitch Deck</button>
-              <button className="px-8 py-4 bg-cyan-600 text-white font-black rounded-2xl hover:bg-cyan-700 transition-all text-xs uppercase tracking-widest">Connect with Founders</button>
+              <button onClick={handleDownloadDeck} className="px-8 py-4 bg-white text-gray-900 font-black rounded-2xl hover:bg-[#E6F6FA] transition-all text-xs uppercase tracking-widest">Download Pitch Deck</button>
+              <button onClick={handleConnectFounders} className="px-8 py-4 bg-[#0690AE] text-white font-black rounded-2xl hover:bg-[#057D97] transition-all text-xs uppercase tracking-widest">Connect with Founders</button>
             </div>
           </div>
         </div>
@@ -71,8 +80,8 @@ const InvestorPortal: React.FC<InvestorPortalProps> = ({ onBack }) => {
             { label: 'Active Users', value: '12,500', icon: Users, trend: '+24% MoM' },
             { label: 'LTV/CAC Ratio', value: '11.4x', icon: TrendingUp, trend: 'Top Percentile' },
           ].map((stat, i) => (
-            <div key={i} className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-gray-100 group hover:border-cyan-300 transition-all">
-               <div className="w-12 h-12 bg-cyan-50 text-cyan-700 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+            <div key={i} className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-gray-100 group hover:border-[#6DCDE0] transition-all">
+               <div className="w-12 h-12 bg-[#E6F6FA] text-[#057D97] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                  <stat.icon size={24} />
                </div>
                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">{stat.label}</p>
@@ -85,35 +94,35 @@ const InvestorPortal: React.FC<InvestorPortalProps> = ({ onBack }) => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
           <div className="bg-white p-10 rounded-[3rem] shadow-sm border border-gray-100">
             <h3 className="text-xl font-black text-gray-900 mb-8 flex items-center gap-3">
-              <TrendingUp size={24} className="text-cyan-700" /> Monthly Growth Trajectory
+              <TrendingUp size={24} className="text-[#057D97]" /> Monthly Growth Trajectory
             </h3>
             <div className="h-80">
-              <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={240}>
+              <SafeResponsiveContainer minHeight={240}>
                 <AreaChart data={tractionData}>
                   <defs>
                     <linearGradient id="colorGmv" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#6366f1" stopOpacity={0.1}/>
-                      <stop offset="95%" stopColor="#6366f1" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#0690AE" stopOpacity={0.14}/>
+                      <stop offset="95%" stopColor="#0690AE" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
                   <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{fill: '#9ca3af', fontSize: 10, fontWeight: 700}} />
                   <YAxis axisLine={false} tickLine={false} tick={{fill: '#9ca3af', fontSize: 10, fontWeight: 700}} />
                   <Tooltip contentStyle={{borderRadius: '24px', border: 'none', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)'}} />
-                  <Area type="monotone" dataKey="gmv" stroke="#6366f1" strokeWidth={4} fillOpacity={1} fill="url(#colorGmv)" />
+                  <Area type="monotone" dataKey="gmv" stroke="#0690AE" strokeWidth={4} fillOpacity={1} fill="url(#colorGmv)" />
                 </AreaChart>
-              </ResponsiveContainer>
+              </SafeResponsiveContainer>
             </div>
             <p className="mt-6 text-xs text-gray-400 font-medium italic text-center">"GMV growth is outpacing user acquisition, signaling deepening wallet share per corporate entity."</p>
           </div>
 
           <div className="bg-white p-10 rounded-[3rem] shadow-sm border border-gray-100">
             <h3 className="text-xl font-black text-gray-900 mb-8 flex items-center gap-3">
-              <PieIcon size={24} className="text-cyan-700" /> Market Opportunity (TAM)
+              <PieIcon size={24} className="text-[#057D97]" /> Market Opportunity (TAM)
             </h3>
             <div className="flex flex-col md:flex-row items-center gap-10">
               <div className="h-60 w-60">
-                <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={220}>
+                <SafeResponsiveContainer minHeight={220}>
                   <PieChart>
                     <Pie
                       data={marketData}
@@ -130,7 +139,7 @@ const InvestorPortal: React.FC<InvestorPortalProps> = ({ onBack }) => {
                     </Pie>
                     <Tooltip />
                   </PieChart>
-                </ResponsiveContainer>
+                </SafeResponsiveContainer>
               </div>
               <div className="space-y-4 flex-1">
                  {marketData.map((item, i) => (
@@ -144,11 +153,11 @@ const InvestorPortal: React.FC<InvestorPortalProps> = ({ onBack }) => {
                  ))}
               </div>
             </div>
-            <div className="mt-12 p-6 bg-cyan-50 rounded-2xl border border-cyan-100">
-               <h4 className="text-xs font-black text-cyan-700 uppercase tracking-widest mb-2 flex items-center gap-2">
+            <div className="mt-12 p-6 bg-[#E6F6FA] rounded-2xl border border-[#CDEEF5]">
+               <h4 className="text-xs font-black text-[#057D97] uppercase tracking-widest mb-2 flex items-center gap-2">
                  <Zap size={14} /> Competitive Edge
                </h4>
-               <p className="text-xs font-medium text-cyan-900 leading-relaxed italic">
+               <p className="text-xs font-medium text-[#034E5E] leading-relaxed italic">
                  "Our unique 12-point audit system creates a 'trust moat' that competitors like LinkedIn or traditional marketplaces cannot replicate without massive overhead."
                </p>
             </div>
@@ -159,9 +168,9 @@ const InvestorPortal: React.FC<InvestorPortalProps> = ({ onBack }) => {
         <div className="bg-gray-900 p-12 rounded-[3.5rem] text-white">
           <div className="flex items-center justify-between mb-12">
             <h3 className="text-2xl font-black flex items-center gap-3">
-              <Rocket className="text-cyan-400" /> Growth Roadmap 2024-25
+              <Rocket className="text-[#38B7D0]" /> Growth Roadmap 2024-25
             </h3>
-            <span className="text-[10px] font-black uppercase tracking-widest text-cyan-400">Series A Ready</span>
+            <span className="text-[10px] font-black uppercase tracking-widest text-[#38B7D0]">Series A Ready</span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {[
@@ -170,8 +179,8 @@ const InvestorPortal: React.FC<InvestorPortalProps> = ({ onBack }) => {
               { q: 'Q1 2025', title: 'AI Sourcing Pro', desc: 'Autonomous agent-based supplier discovery and RFP drafting.' },
               { q: 'Q2 2025', title: 'Nexus Enterprise API', desc: 'Seamless integration with SAP, Oracle, and Microsoft ERP.' },
             ].map((step, i) => (
-              <div key={i} className="bg-white/5 p-6 rounded-3xl border border-white/10 hover:border-cyan-400 transition-colors">
-                 <p className="text-[10px] font-black uppercase tracking-widest text-cyan-400 mb-3">{step.q}</p>
+              <div key={i} className="bg-white/5 p-6 rounded-3xl border border-white/10 hover:border-[#38B7D0] transition-colors">
+                 <p className="text-[10px] font-black uppercase tracking-widest text-[#38B7D0] mb-3">{step.q}</p>
                  <h4 className="font-bold mb-2">{step.title}</h4>
                  <p className="text-xs text-gray-400 leading-relaxed">{step.desc}</p>
               </div>

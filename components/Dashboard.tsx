@@ -7,13 +7,13 @@ import {
   YAxis, 
   CartesianGrid, 
   Tooltip, 
-  ResponsiveContainer,
   AreaChart,
   Area,
   PieChart,
   Pie,
   Cell
 } from 'recharts';
+import SafeResponsiveContainer from './charts/SafeResponsiveContainer';
 import { 
   DollarSign, 
   ShoppingBag, 
@@ -58,7 +58,7 @@ const Dashboard: React.FC<{ user: any; companies: Company[] }> = ({ user, compan
         </div>
         <div className="flex flex-wrap gap-2 md:gap-3">
            {company?.verified && (
-             <div className="flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 bg-cyan-50 text-cyan-700 rounded-xl font-black text-[10px] md:text-xs uppercase tracking-widest border border-cyan-100">
+             <div className="flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 bg-[#E6F6FA] text-[#057D97] rounded-xl font-black text-[10px] md:text-xs uppercase tracking-widest border border-[#CDEEF5]">
                {/* Fixed: removed md:size prop which is not supported by Lucide icons */}
                <ShieldCheck size={14} /> Verified
              </div>
@@ -66,7 +66,7 @@ const Dashboard: React.FC<{ user: any; companies: Company[] }> = ({ user, compan
            <button 
             onClick={handleExport}
             disabled={isExporting}
-            className="flex-1 sm:flex-none px-4 py-2 md:px-6 md:py-2.5 bg-cyan-600 text-white font-black rounded-xl hover:bg-gray-900 transition-all shadow-xl shadow-cyan-100 flex items-center justify-center gap-2 disabled:opacity-50 text-xs md:text-sm"
+            className="flex-1 sm:flex-none px-4 py-2 md:px-6 md:py-2.5 bg-[#0690AE] text-white font-black rounded-xl hover:bg-gray-900 transition-all shadow-xl shadow-[#CDEEF5] flex items-center justify-center gap-2 disabled:opacity-50 text-xs md:text-sm"
            >
              {/* Fixed: removed md:size prop which is not supported by Lucide icons */}
              {isExporting ? 'Exporting...' : <><Download size={16} /> Export ROI</>}
@@ -84,7 +84,17 @@ const Dashboard: React.FC<{ user: any; companies: Company[] }> = ({ user, compan
           <div key={idx} className="bg-white p-6 md:p-8 rounded-[1.5rem] md:rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 group">
             <div className="flex items-start justify-between">
               {/* Fixed: removed md:size prop which is not supported by Lucide icons */}
-              <div className={`p-3 md:p-4 bg-${stat.color}-50 text-${stat.color}-600 rounded-xl md:rounded-2xl group-hover:scale-110 transition-transform`}>
+              <div
+                className={`p-3 md:p-4 rounded-xl md:rounded-2xl group-hover:scale-110 transition-transform ${
+                  stat.color === 'cyan'
+                    ? 'bg-[#E6F6FA] text-[#057D97]'
+                    : stat.color === 'emerald'
+                      ? 'bg-green-50 text-green-600'
+                      : stat.color === 'amber'
+                        ? 'bg-[#CDEEF5] text-[#057D97]'
+                        : 'bg-[#E6F6FA] text-[#0690AE]'
+                }`}
+              >
                 <stat.icon size={20} />
               </div>
               <div className={`flex items-center gap-1 text-[10px] font-black uppercase tracking-widest ${stat.trend === 'up' ? 'text-green-600' : 'text-red-600'}`}>
@@ -105,19 +115,19 @@ const Dashboard: React.FC<{ user: any; companies: Company[] }> = ({ user, compan
         <div className="lg:col-span-2 bg-white p-6 md:p-10 rounded-[1.5rem] md:rounded-[2.5rem] border border-gray-100 shadow-sm">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <h3 className="text-lg md:text-xl font-black text-gray-900">Revenue Split Analysis</h3>
-            <select className="w-full sm:w-auto bg-gray-50 border-none rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest px-4 py-2 focus:ring-2 focus:ring-cyan-500 cursor-pointer">
+            <select className="w-full sm:w-auto bg-gray-50 border-none rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest px-4 py-2 focus:ring-2 focus:ring-[#0690AE] cursor-pointer">
               <option>Q1 2024</option>
               <option>Q4 2023</option>
               <option>Q3 2023</option>
             </select>
           </div>
           <div className="h-60 md:h-80 w-full overflow-hidden">
-            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={240}>
+            <SafeResponsiveContainer minHeight={240}>
               <AreaChart data={data}>
                 <defs>
                   <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#6366f1" stopOpacity={0.1}/>
-                    <stop offset="95%" stopColor="#6366f1" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#0690AE" stopOpacity={0.14}/>
+                    <stop offset="95%" stopColor="#0690AE" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
@@ -126,9 +136,9 @@ const Dashboard: React.FC<{ user: any; companies: Company[] }> = ({ user, compan
                 <Tooltip 
                   contentStyle={{borderRadius: '20px', border: 'none', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)', padding: '16px'}}
                 />
-                <Area type="monotone" dataKey="revenue" stroke="#6366f1" strokeWidth={4} fillOpacity={1} fill="url(#colorRev)" />
+                <Area type="monotone" dataKey="revenue" stroke="#0690AE" strokeWidth={4} fillOpacity={1} fill="url(#colorRev)" />
               </AreaChart>
-            </ResponsiveContainer>
+            </SafeResponsiveContainer>
           </div>
         </div>
 
@@ -138,10 +148,10 @@ const Dashboard: React.FC<{ user: any; companies: Company[] }> = ({ user, compan
             <div>
               <div className="flex justify-between items-center mb-2">
                 <span className="text-[10px] md:text-xs font-black text-gray-500 uppercase tracking-widest">On-Time Delivery</span>
-                <span className="text-[10px] md:text-xs font-black text-cyan-700">{company?.onTimeDelivery || 0}%</span>
+                <span className="text-[10px] md:text-xs font-black text-[#057D97]">{company?.onTimeDelivery || 0}%</span>
               </div>
               <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden shadow-inner">
-                <div className="h-full bg-cyan-600 transition-all duration-1000 ease-out" style={{width: `${company?.onTimeDelivery || 0}%`}}></div>
+                <div className="h-full bg-[#0690AE] transition-all duration-1000 ease-out" style={{width: `${company?.onTimeDelivery || 0}%`}}></div>
               </div>
             </div>
             <div>

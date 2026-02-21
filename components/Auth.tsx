@@ -33,6 +33,50 @@ const Auth: React.FC<AuthProps> = ({ onLogin }) => {
     description: '',
   });
 
+  interface StoredUserProfile {
+    fullName?: string;
+    email?: string;
+    phone?: string;
+    role?: string;
+    companyId?: string;
+    companyName?: string;
+    gstNumber?: string;
+    industry?: string;
+    companyDomain?: string;
+    website?: string;
+    address?: string;
+    description?: string;
+  }
+
+  const persistUserProfile = (user: User, profileOverrides: Partial<StoredUserProfile> = {}) => {
+    try {
+      const key = `nexus_user_profile_${user.id}`;
+      const raw = localStorage.getItem(key);
+      const existing = raw ? (JSON.parse(raw) as StoredUserProfile) : {};
+
+      const merged: StoredUserProfile = {
+        fullName: user.name,
+        email: user.email,
+        phone: user.phone,
+        role: String(user.role),
+        companyId: user.companyId,
+        companyName: user.companyName,
+        gstNumber: user.gstNumber,
+        industry: user.industry,
+        companyDomain: user.companyDomain,
+        website: user.website,
+        address: user.address,
+        description: user.description,
+        ...existing,
+        ...profileOverrides,
+      };
+
+      localStorage.setItem(key, JSON.stringify(merged));
+    } catch {
+      // Ignore localStorage failures
+    }
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -41,11 +85,28 @@ const Auth: React.FC<AuthProps> = ({ onLogin }) => {
     try {
       const res = await authService.login(signIn);
       if (res?.token) apiClient.setToken(res.token);
-      if (res?.user) return onLogin(res.user);
+      if (res?.user) {
+        persistUserProfile(res.user, {
+          fullName: res.user.name,
+          email: res.user.email,
+          phone: res.user.phone,
+          role: String(res.user.role),
+          companyId: res.user.companyId,
+        });
+        return onLogin(res.user);
+      }
       setError('Login failed: unexpected response');
     } catch (err: any) {
       const fallback = MOCK_USERS.find(u => u.email === signIn.email);
-      if (fallback) return onLogin(fallback);
+      if (fallback) {
+        persistUserProfile(fallback, {
+          fullName: fallback.name,
+          email: fallback.email,
+          role: String(fallback.role),
+          companyId: fallback.companyId,
+        });
+        return onLogin(fallback);
+      }
       setError(err?.message || 'Invalid credentials');
     } finally {
       setIsSubmitting(false);
@@ -74,7 +135,23 @@ const Auth: React.FC<AuthProps> = ({ onLogin }) => {
       });
 
       if (res?.token) apiClient.setToken(res.token);
-      if (res?.user) return onLogin(res.user);
+      if (res?.user) {
+        persistUserProfile(res.user, {
+          fullName: register.fullName || res.user.name,
+          email: register.email || res.user.email,
+          phone: register.phone || res.user.phone,
+          role: String(res.user.role || Role.SELLER),
+          companyId: res.user.companyId,
+          companyName: register.companyName,
+          gstNumber: register.gstNumber,
+          industry: register.industry,
+          companyDomain: register.companyDomain,
+          website: register.website,
+          address: register.address,
+          description: register.description,
+        });
+        return onLogin(res.user);
+      }
       setError('Registration failed: unexpected response');
     } catch (err: any) {
       setError(err?.message || 'Registration failed');
@@ -91,13 +168,30 @@ const Auth: React.FC<AuthProps> = ({ onLogin }) => {
     try {
       const res = await authService.login({ email, password: 'password123' });
       if (res?.token) apiClient.setToken(res.token);
-      if (res?.user) return onLogin(res.user);
+      if (res?.user) {
+        persistUserProfile(res.user, {
+          fullName: res.user.name,
+          email: res.user.email,
+          role: String(res.user.role),
+          companyId: res.user.companyId,
+          phone: res.user.phone,
+        });
+        return onLogin(res.user);
+      }
       setError('Demo login failed: unexpected response');
     } catch (err: any) {
       const fallback =
         MOCK_USERS.find(u => u.email === email) ||
         (type === 'merchant' ? MOCK_USERS.find(u => u.role === Role.SELLER) : MOCK_USERS.find(u => u.role === Role.ADMIN));
-      if (fallback) return onLogin(fallback);
+      if (fallback) {
+        persistUserProfile(fallback, {
+          fullName: fallback.name,
+          email: fallback.email,
+          role: String(fallback.role),
+          companyId: fallback.companyId,
+        });
+        return onLogin(fallback);
+      }
       setError(err?.message || 'Demo login failed');
     } finally {
       setIsSubmitting(false);
@@ -107,32 +201,36 @@ const Auth: React.FC<AuthProps> = ({ onLogin }) => {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
       <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
-        <div className="bg-cyan-700 p-12 text-white flex flex-col justify-between relative overflow-hidden">
+        <div className="bg-[#057D97] p-12 text-white flex flex-col justify-between relative overflow-hidden">
           <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
           <div className="relative z-10">
             <div className="flex items-center gap-3 mb-10">
-              <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-cyan-700 font-black text-xl">N</div>
+              <img
+                src="/b2b logo.png"
+                alt="B2B Nexus logo"
+                className="w-10 h-10 rounded-xl border border-white/60 object-cover"
+              />
               <span className="text-2xl font-bold tracking-tight">B2B Nexus</span>
             </div>
             <h1 className="text-4xl font-extrabold leading-tight">Enterprise Merchant Onboarding</h1>
-            <p className="mt-6 text-cyan-100 text-lg leading-relaxed">
+            <p className="mt-6 text-[#CDEEF5] text-lg leading-relaxed">
               Complete business verification details once and unlock trusted, high-value deal opportunities.
             </p>
           </div>
 
           <div className="mt-12 relative z-10 space-y-6">
             <div className="flex items-center gap-4 bg-white/10 backdrop-blur-sm p-4 rounded-2xl border border-white/20">
-              <Shield className="text-cyan-200 shrink-0" />
+              <Shield className="text-[#9EDDEA] shrink-0" />
               <div>
                 <h4 className="font-bold text-sm">12-Point Governance</h4>
-                <p className="text-xs text-cyan-100">Merchant registration captures regulatory and operational data up-front.</p>
+                <p className="text-xs text-[#CDEEF5]">Merchant registration captures regulatory and operational data up-front.</p>
               </div>
             </div>
             <div className="flex items-center gap-4 bg-white/10 backdrop-blur-sm p-4 rounded-2xl border border-white/20">
-              <Building2 className="text-cyan-200 shrink-0" />
+              <Building2 className="text-[#9EDDEA] shrink-0" />
               <div>
                 <h4 className="font-bold text-sm">Unified Partner Profile</h4>
-                <p className="text-xs text-cyan-100">Company identity, GST, contact data, and business footprint in one profile.</p>
+                <p className="text-xs text-[#CDEEF5]">Company identity, GST, contact data, and business footprint in one profile.</p>
               </div>
             </div>
           </div>
@@ -143,13 +241,13 @@ const Auth: React.FC<AuthProps> = ({ onLogin }) => {
             <div className="flex gap-2 bg-gray-100 p-1 rounded-xl mb-8">
               <button
                 onClick={() => setMode('signin')}
-                className={`flex-1 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest transition-all ${mode === 'signin' ? 'bg-white text-cyan-700 shadow-sm' : 'text-gray-500'}`}
+                className={`flex-1 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest transition-all ${mode === 'signin' ? 'bg-white text-[#057D97] shadow-sm' : 'text-gray-500'}`}
               >
                 Sign In
               </button>
               <button
                 onClick={() => setMode('register')}
-                className={`flex-1 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest transition-all ${mode === 'register' ? 'bg-white text-cyan-700 shadow-sm' : 'text-gray-500'}`}
+                className={`flex-1 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest transition-all ${mode === 'register' ? 'bg-white text-[#057D97] shadow-sm' : 'text-gray-500'}`}
               >
                 Merchant Register
               </button>
@@ -164,7 +262,7 @@ const Auth: React.FC<AuthProps> = ({ onLogin }) => {
                   <label className="block text-sm font-bold text-gray-700 mb-2">Corporate Email</label>
                   <input
                     type="email"
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-cyan-500 outline-none transition-all"
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0690AE] outline-none transition-all"
                     placeholder="name@company.com"
                     value={signIn.email}
                     onChange={(e) => setSignIn({ ...signIn, email: e.target.value })}
@@ -176,7 +274,7 @@ const Auth: React.FC<AuthProps> = ({ onLogin }) => {
                   <label className="block text-sm font-bold text-gray-700 mb-2">Password</label>
                   <input
                     type="password"
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-cyan-500 outline-none transition-all"
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0690AE] outline-none transition-all"
                     placeholder="********"
                     value={signIn.password}
                     onChange={(e) => setSignIn({ ...signIn, password: e.target.value })}
@@ -189,7 +287,7 @@ const Auth: React.FC<AuthProps> = ({ onLogin }) => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-4 bg-cyan-600 text-white font-bold rounded-xl hover:bg-cyan-700 transition-all shadow-lg shadow-cyan-200 flex items-center justify-center gap-2 disabled:opacity-50"
+                  className="w-full py-4 bg-[#0690AE] text-white font-bold rounded-xl hover:bg-[#057D97] transition-all shadow-lg shadow-[#9EDDEA] flex items-center justify-center gap-2 disabled:opacity-50"
                 >
                   {isSubmitting ? 'Signing In...' : <>Sign In <ChevronRight size={18} /></>}
                 </button>
@@ -200,7 +298,7 @@ const Auth: React.FC<AuthProps> = ({ onLogin }) => {
                     <button
                       type="button"
                       onClick={() => loginDemo('merchant')}
-                      className="p-3 rounded-xl border border-cyan-200 bg-cyan-50 text-cyan-700 text-xs font-black uppercase tracking-widest hover:bg-cyan-100 transition-all"
+                      className="p-3 rounded-xl border border-[#9EDDEA] bg-[#E6F6FA] text-[#057D97] text-xs font-black uppercase tracking-widest hover:bg-[#CDEEF5] transition-all"
                     >
                       Demo Merchant
                     </button>
@@ -224,7 +322,7 @@ const Auth: React.FC<AuthProps> = ({ onLogin }) => {
                     <label className="block text-xs font-bold text-gray-700 mb-2">Full Name *</label>
                     <input
                       type="text"
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-cyan-500 outline-none"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0690AE] outline-none"
                       value={register.fullName}
                       onChange={(e) => setRegister({ ...register, fullName: e.target.value })}
                       required
@@ -234,7 +332,7 @@ const Auth: React.FC<AuthProps> = ({ onLogin }) => {
                     <label className="block text-xs font-bold text-gray-700 mb-2">Company Name *</label>
                     <input
                       type="text"
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-cyan-500 outline-none"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0690AE] outline-none"
                       value={register.companyName}
                       onChange={(e) => setRegister({ ...register, companyName: e.target.value })}
                       required
@@ -247,7 +345,7 @@ const Auth: React.FC<AuthProps> = ({ onLogin }) => {
                     <label className="block text-xs font-bold text-gray-700 mb-2">GST Number *</label>
                     <input
                       type="text"
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-cyan-500 outline-none"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0690AE] outline-none"
                       value={register.gstNumber}
                       onChange={(e) => setRegister({ ...register, gstNumber: e.target.value })}
                       required
@@ -257,7 +355,7 @@ const Auth: React.FC<AuthProps> = ({ onLogin }) => {
                     <label className="block text-xs font-bold text-gray-700 mb-2">Phone Number *</label>
                     <input
                       type="tel"
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-cyan-500 outline-none"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0690AE] outline-none"
                       value={register.phone}
                       onChange={(e) => setRegister({ ...register, phone: e.target.value })}
                       required
@@ -270,7 +368,7 @@ const Auth: React.FC<AuthProps> = ({ onLogin }) => {
                     <label className="block text-xs font-bold text-gray-700 mb-2">Business Email *</label>
                     <input
                       type="email"
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-cyan-500 outline-none"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0690AE] outline-none"
                       value={register.email}
                       onChange={(e) => setRegister({ ...register, email: e.target.value })}
                       required
@@ -280,7 +378,7 @@ const Auth: React.FC<AuthProps> = ({ onLogin }) => {
                     <label className="block text-xs font-bold text-gray-700 mb-2">Password *</label>
                     <input
                       type="password"
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-cyan-500 outline-none"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0690AE] outline-none"
                       value={register.password}
                       onChange={(e) => setRegister({ ...register, password: e.target.value })}
                       required
@@ -293,7 +391,7 @@ const Auth: React.FC<AuthProps> = ({ onLogin }) => {
                     <label className="block text-xs font-bold text-gray-700 mb-2">Industry</label>
                     <input
                       type="text"
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-cyan-500 outline-none"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0690AE] outline-none"
                       value={register.industry}
                       onChange={(e) => setRegister({ ...register, industry: e.target.value })}
                     />
@@ -302,7 +400,7 @@ const Auth: React.FC<AuthProps> = ({ onLogin }) => {
                     <label className="block text-xs font-bold text-gray-700 mb-2">Company Domain</label>
                     <input
                       type="text"
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-cyan-500 outline-none"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0690AE] outline-none"
                       value={register.companyDomain}
                       onChange={(e) => setRegister({ ...register, companyDomain: e.target.value })}
                     />
@@ -314,7 +412,7 @@ const Auth: React.FC<AuthProps> = ({ onLogin }) => {
                     <label className="block text-xs font-bold text-gray-700 mb-2">Website</label>
                     <input
                       type="url"
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-cyan-500 outline-none"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0690AE] outline-none"
                       value={register.website}
                       onChange={(e) => setRegister({ ...register, website: e.target.value })}
                     />
@@ -323,7 +421,7 @@ const Auth: React.FC<AuthProps> = ({ onLogin }) => {
                     <label className="block text-xs font-bold text-gray-700 mb-2">Address</label>
                     <input
                       type="text"
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-cyan-500 outline-none"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0690AE] outline-none"
                       value={register.address}
                       onChange={(e) => setRegister({ ...register, address: e.target.value })}
                     />
@@ -333,7 +431,7 @@ const Auth: React.FC<AuthProps> = ({ onLogin }) => {
                 <div>
                   <label className="block text-xs font-bold text-gray-700 mb-2">Business Description</label>
                   <textarea
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-cyan-500 outline-none min-h-24"
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0690AE] outline-none min-h-24"
                     value={register.description}
                     onChange={(e) => setRegister({ ...register, description: e.target.value })}
                   />
@@ -344,7 +442,7 @@ const Auth: React.FC<AuthProps> = ({ onLogin }) => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-4 bg-cyan-600 text-white font-bold rounded-xl hover:bg-cyan-700 transition-all shadow-lg shadow-cyan-200 flex items-center justify-center gap-2 disabled:opacity-50"
+                  className="w-full py-4 bg-[#0690AE] text-white font-bold rounded-xl hover:bg-[#057D97] transition-all shadow-lg shadow-[#9EDDEA] flex items-center justify-center gap-2 disabled:opacity-50"
                 >
                   {isSubmitting ? 'Submitting...' : <>Create Merchant Account <UserPlus size={18} /></>}
                 </button>

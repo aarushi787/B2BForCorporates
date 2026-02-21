@@ -14,6 +14,25 @@ const Contracts: React.FC<ContractsProps> = ({ deals }) => {
 
   const allContracts = deals.flatMap(d => d.contracts.map(c => ({ ...c, dealId: d.id })));
 
+  const handleDownloadContract = (contract: Contract & { dealId: string }) => {
+    const blob = new Blob([contract.content || 'No contract content available.'], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${contract.type.toLowerCase()}-${contract.id}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleOpenContract = (contract: Contract & { dealId: string }) => {
+    const nextWindow = window.open('', '_blank', 'noopener,noreferrer');
+    if (!nextWindow) return;
+    nextWindow.document.write(`<pre style="font-family:monospace;white-space:pre-wrap;padding:24px;">${contract.content || 'No contract content available.'}</pre>`);
+    nextWindow.document.title = `${contract.type} Contract`;
+  };
+
   return (
     <div className="space-y-8 pb-12">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -25,7 +44,7 @@ const Contracts: React.FC<ContractsProps> = ({ deals }) => {
           <button onClick={() => setShowArchive(true)} className="flex items-center gap-2 px-6 py-3 bg-white border border-gray-200 text-gray-700 text-sm font-black rounded-2xl hover:bg-gray-50 shadow-sm transition-all">
             <Filter size={18} /> Archive
           </button>
-          <button onClick={() => setShowNewDraft(true)} className="flex items-center gap-2 px-6 py-3 bg-cyan-600 text-white text-sm font-black rounded-2xl hover:bg-cyan-700 shadow-xl shadow-cyan-100 transition-all">
+          <button onClick={() => setShowNewDraft(true)} className="flex items-center gap-2 px-6 py-3 bg-[#0690AE] text-white text-sm font-black rounded-2xl hover:bg-[#057D97] shadow-xl shadow-[#CDEEF5] transition-all">
             <Plus size={18} /> New Draft
           </button>
         </div>
@@ -52,7 +71,7 @@ const Contracts: React.FC<ContractsProps> = ({ deals }) => {
             <input 
               type="text" 
               placeholder="Search contracts..." 
-              className="w-full pl-12 pr-4 py-3 bg-gray-50 border-none rounded-2xl text-sm focus:ring-2 focus:ring-cyan-500"
+              className="w-full pl-12 pr-4 py-3 bg-gray-50 border-none rounded-2xl text-sm focus:ring-2 focus:ring-[#0690AE]"
             />
           </div>
         </div>
@@ -73,7 +92,7 @@ const Contracts: React.FC<ContractsProps> = ({ deals }) => {
                 <tr key={contract.id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-8 py-6">
                     <div className="flex items-center gap-3">
-                      <div className="p-3 bg-cyan-50 text-cyan-700 rounded-xl">
+                      <div className="p-3 bg-[#E6F6FA] text-[#057D97] rounded-xl">
                         <FileText size={20} />
                       </div>
                       <div>
@@ -92,15 +111,15 @@ const Contracts: React.FC<ContractsProps> = ({ deals }) => {
                         <ShieldCheck size={14} /> Executed
                       </span>
                     ) : (
-                      <span className="flex items-center gap-1.5 text-[10px] font-black text-amber-600 uppercase tracking-widest">
+                      <span className="flex items-center gap-1.5 text-[10px] font-black text-[#0690AE] uppercase tracking-widest">
                         <Clock size={14} /> Pending Sign
                       </span>
                     )}
                   </td>
                   <td className="px-8 py-6">
                     <div className="flex gap-2">
-                      <button className="p-2.5 bg-gray-50 text-gray-400 rounded-xl hover:bg-cyan-50 hover:text-cyan-700 transition-all"><Download size={18} /></button>
-                      <button className="p-2.5 bg-gray-50 text-gray-400 rounded-xl hover:bg-cyan-50 hover:text-cyan-700 transition-all"><ExternalLink size={18} /></button>
+                      <button onClick={() => handleDownloadContract(contract)} className="p-2.5 bg-gray-50 text-gray-400 rounded-xl hover:bg-[#E6F6FA] hover:text-[#057D97] transition-all"><Download size={18} /></button>
+                      <button onClick={() => handleOpenContract(contract)} className="p-2.5 bg-gray-50 text-gray-400 rounded-xl hover:bg-[#E6F6FA] hover:text-[#057D97] transition-all"><ExternalLink size={18} /></button>
                     </div>
                   </td>
                 </tr>
@@ -133,7 +152,7 @@ const Contracts: React.FC<ContractsProps> = ({ deals }) => {
                     <button 
                       key={t}
                       onClick={() => setDraftType(t as any)}
-                      className={`py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${draftType === t ? 'bg-cyan-600 text-white shadow-xl shadow-cyan-100' : 'bg-gray-50 text-gray-400 border border-gray-100'}`}
+                      className={`py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${draftType === t ? 'bg-[#0690AE] text-white shadow-xl shadow-[#CDEEF5]' : 'bg-gray-50 text-gray-400 border border-gray-100'}`}
                     >
                       {t}
                     </button>
@@ -142,17 +161,17 @@ const Contracts: React.FC<ContractsProps> = ({ deals }) => {
 
                <div>
                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Target Deal Node</label>
-                 <select className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:ring-4 focus:ring-cyan-500/10 text-sm font-bold">
+                 <select className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:ring-4 focus:ring-[#0690AE]/10 text-sm font-bold">
                     {deals.map(d => <option key={d.id} value={d.id}>DEAL-{d.id.toUpperCase()} - {d.notes.split('.')[0]}</option>)}
                  </select>
                </div>
 
-               <div className="p-6 bg-amber-50 rounded-3xl border border-amber-100 flex items-start gap-3">
-                  <ShieldAlert className="text-amber-600 shrink-0 mt-0.5" size={18} />
-                  <p className="text-[10px] text-amber-700 font-medium leading-relaxed italic">Drafts initiated here utilize our AI-powered standard legal library for maximum compliance.</p>
+               <div className="p-6 bg-[#E6F6FA] rounded-3xl border border-[#CDEEF5] flex items-start gap-3">
+                  <ShieldAlert className="text-[#0690AE] shrink-0 mt-0.5" size={18} />
+                  <p className="text-[10px] text-[#057D97] font-medium leading-relaxed italic">Drafts initiated here utilize our AI-powered standard legal library for maximum compliance.</p>
                </div>
 
-               <button onClick={() => setShowNewDraft(false)} className="w-full py-5 bg-cyan-600 text-white font-black rounded-2xl shadow-xl shadow-cyan-100 hover:bg-cyan-700 transition-all flex items-center justify-center gap-2">
+               <button onClick={() => setShowNewDraft(false)} className="w-full py-5 bg-[#0690AE] text-white font-black rounded-2xl shadow-xl shadow-[#CDEEF5] hover:bg-[#057D97] transition-all flex items-center justify-center gap-2">
                  Generate Draft with AI <Sparkles size={18} />
                </button>
             </div>

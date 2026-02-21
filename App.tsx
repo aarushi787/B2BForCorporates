@@ -8,8 +8,7 @@ import Auth from './components/Auth';
 import Dashboard from './components/Dashboard';
 import Marketplace from './components/Marketplace';
 import Companies from './components/Companies';
-import * as LandingPageModule from './components/LandingPage';
-const LandingPage: React.FC<any> = (LandingPageModule as any).default || (LandingPageModule as any);
+import LandingPage from './components/LandingPage';
 import DealWorkspace from './components/DealWorkspace';
 import FinancialLedger from './components/FinancialLedger';
 import AdminPanel from './components/AdminPanel';
@@ -240,9 +239,9 @@ const App: React.FC = () => {
     return (
       <div className="flex items-center justify-center h-screen bg-white">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-600 mb-4"></div>
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[#0690AE] mb-4"></div>
           <p className="text-gray-500 font-medium">Loading marketplace data...</p>
-          {apiError && <p className="text-xs text-amber-600 mt-2">{apiError}</p>}
+          {apiError && <p className="text-xs text-[#0690AE] mt-2">{apiError}</p>}
         </div>
       </div>
     );
@@ -262,7 +261,7 @@ const App: React.FC = () => {
           onClick={() => setShowAuth(false)}
           className="absolute top-8 left-8 z-50 px-4 py-2 bg-white text-gray-500 text-sm font-bold rounded-xl hover:bg-gray-100 transition-all border border-gray-100 shadow-sm"
         >
-          ← Back
+          &lt; Back
         </button>
         <Auth onLogin={handleLogin} />
       </div>
@@ -309,7 +308,7 @@ const App: React.FC = () => {
             <p className="text-gray-500 mt-2">Initialize your first multi-party collaboration via the Marketplace.</p>
             <button 
               onClick={() => setActiveView('marketplace')}
-              className="mt-6 px-10 py-4 bg-cyan-600 text-white font-black rounded-2xl hover:bg-cyan-700 transition-all shadow-xl shadow-cyan-100"
+              className="mt-6 px-10 py-4 bg-[#0690AE] text-white font-black rounded-2xl hover:bg-[#057D97] transition-all shadow-xl shadow-[#CDEEF5]"
             >
               Discover Capabilities
             </button>
